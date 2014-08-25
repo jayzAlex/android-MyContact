@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World!</string>
+    <string name="app_name">一键拨号</string>
+	<string name="carol">carol</string>
+	<string name="loading">加载中...</string>
+	<string name="no_sms_items">没有短信息</string>
+	<string name="no_more_sms">没有更多的信息了</string>
+</resources>

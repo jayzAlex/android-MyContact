@@ -1,0 +1,77 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/acbuwa_page"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <RadioGroup
+        android:id="@+id/bottom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        android:orientation="horizontal"
+        android:weightSum="3" >
+
+        <xu.ye.view.ui.RadioButtonCenter
+            android:id="@+id/blackList"
+            android:layout_width="match_parent"
+            android:layout_height="80dip"
+            android:layout_weight="1"
+            android:button="@drawable/rd_blacklist_selector"
+            android:gravity="bottom" >
+        </xu.ye.view.ui.RadioButtonCenter>
+
+        <xu.ye.view.ui.RadioButtonCenter
+            android:id="@+id/whiteList"
+            android:layout_width="match_parent"
+            android:layout_height="80dip"
+            android:layout_weight="1"
+            android:button="@drawable/rd_whitelist_selector"
+            android:gravity="bottom" >
+        </xu.ye.view.ui.RadioButtonCenter>
+
+        <xu.ye.view.ui.RadioButtonCenter
+            android:id="@+id/allList"
+            android:layout_width="match_parent"
+            android:layout_height="80dip"
+            android:layout_weight="1"
+            android:button="@drawable/rd_alllist_selector"
+            android:checked="true"
+            android:gravity="bottom" >
+        </xu.ye.view.ui.RadioButtonCenter>
+    </RadioGroup>
+
+    <LinearLayout
+        android:id="@+id/ln_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/bottom"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/txt1"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="都不接"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/txt2"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="只想接"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/txt3"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="全部接"
+            android:textColor="@color/black" />
+    </LinearLayout>
+    
+</RelativeLayout>
