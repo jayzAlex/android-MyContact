@@ -106,7 +106,13 @@ public class DragGridView extends ViewGroup implements View.OnTouchListener,
 		super.addView(child);
 		newPositions.add(-1);
 	};
-
+	
+	@Override
+	public void addView(View child, int index) {
+		super.addView(child, index);
+		newPositions.add(index);
+	};
+	
 	@Override
 	public void removeViewAt(int index) {
 		super.removeViewAt(index);

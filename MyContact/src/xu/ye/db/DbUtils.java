@@ -37,19 +37,34 @@ import android.os.Environment;
  */
 public class DbUtils {
 	private Context context;
-	private static final String FILEPATH;
-	private static final String FILENAME;
+	private static String filepath;
+	private static String filename;
 	private static SQLiteDatabase database;
 
-	static {
-		FILEPATH = Environment.getExternalStorageDirectory().getAbsolutePath()
-				+ "/MyContact/DB";
-		FILENAME = "contact_dict";
+//	static {
+////		FILEPATH = Environment.getExternalStorageDirectory().getAbsolutePath()
+////				+ "/MyContact/DB";
+//		getDiskCacheDir(context, "DB");
+//		FILENAME = "contact_dict";
+//	}
+	
+	public File getDiskCacheDir(Context context, String uniqueName) {
+		String cachePath;
+		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
+				|| !Environment.isExternalStorageRemovable()) {
+			cachePath = context.getExternalCacheDir().getPath();
+		} else {
+			cachePath = context.getCacheDir().getPath();
+		}
+		return new File(cachePath + File.separator + uniqueName);
 	}
+
 	
 	public DbUtils(Context context){
 		try {
 			setContext(context);
+			filepath = getDiskCacheDir(context, "DB").getAbsolutePath();
+			filename = "contact_dict";
 			copydatabase();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -68,11 +83,11 @@ public class DbUtils {
 
 		database = null;
 		try {
-			File file = new File(FILEPATH);
+			File file = new File(filepath);
 			if (!file.exists()) {
 				file.mkdirs();
 			}
-			String databaseFilename = FILEPATH + "/" + FILENAME;
+			String databaseFilename = filepath + File.separator + filename;
 			database = SQLiteDatabase.openOrCreateDatabase(databaseFilename,
 					null);
 		} catch (Exception e) {
@@ -97,11 +112,11 @@ public class DbUtils {
 
 	public void copydatabase() throws IOException {
 
-		File path = new File(FILEPATH);
+		File path = new File(filepath);
 		if (!path.exists()) {
 			path.mkdirs();
 		}
-		File file = new File(FILEPATH + "/" + FILENAME);
+		File file = new File(filepath + File.separator + filename);
 		if (!file.exists()) {
 			file.createNewFile();
 			OutputStream out = new FileOutputStream(file);
@@ -312,7 +327,7 @@ public class DbUtils {
 		ContactBean bean = null;
 		SQLiteDatabase sdb = openDatabase();
 		ArrayList<ContactBean> list = new ArrayList<ContactBean>();
-		String sql = "select * from QUICK";
+		String sql = "select * from QUICK where phonenum is not null and phonenum != '' order by position desc";
 		Cursor c = sdb.rawQuery( sql, null);
 		while (c.moveToNext()) {
 			bean = new ContactBean(c.getInt(c.getColumnIndex("CONTACTID")),
