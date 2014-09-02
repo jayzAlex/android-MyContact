@@ -41,4 +41,11 @@
     <color name="gray_light">#CCCCCC</color>
 	<color name="gray_border">#666666</color>
 	<color name="blue_solid">#0066FF</color>
+	
+	<!-- ios alertdialog -->
+    <color name="trans">#00000000</color>
+    <color name="alertdialog_line">#c6c6c6</color>
+    <color name="actionsheet_blue">#037BFF</color>
+    <color name="actionsheet_red">#FD4A2E</color>
+    <color name="actionsheet_gray">#8F8F8F</color>	
 </resources>

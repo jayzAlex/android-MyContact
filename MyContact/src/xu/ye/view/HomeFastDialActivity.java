@@ -2,39 +2,46 @@ package xu.ye.view;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import xu.ye.R;
-import xu.ye.application.MyApplication;
 import xu.ye.bean.ContactBean;
 import xu.ye.db.DbUtils;
+import xu.ye.uitl.BaseIntentUtil;
+import xu.ye.view.sms.MessageBoxList;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.util.SparseArray;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.way.view.CircularImage;
 import com.way.view.DragGridView;
 import com.way.view.DragGridView.OnRearrangeListener;
+import com.zf.iosdialog.widget.ActionSheetDialog;
+import com.zf.iosdialog.widget.ActionSheetDialog.OnSheetItemClickListener;
+import com.zf.iosdialog.widget.ActionSheetDialog.SheetItemColor;
 
 /**
  * MainActivity
@@ -47,6 +54,7 @@ public class HomeFastDialActivity extends Activity {
 	DragGridView mDragGridView;
 	private Context context;
 	private ArrayList<ContactBean> quickList;
+	private Button addContactBtn;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -54,6 +62,7 @@ public class HomeFastDialActivity extends Activity {
 		setContentView(R.layout.home_fastdial_page);
 		mDragGridView = ((DragGridView) findViewById(R.id.vgv));
 		context = getApplicationContext();
+		addContactBtn = (Button) findViewById(R.id.addContactBtn);
         DbUtils dbUtils = new DbUtils(context);
         quickList = dbUtils.getQuick();
         initQuickViews();
@@ -89,22 +98,51 @@ public class HomeFastDialActivity extends Activity {
 		});
 		mDragGridView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> adapterView, View view, int i,
+			public void onItemClick(AdapterView<?> adapterView, View view, final int i,
 					long arg3) {
-				if (i < quickList.size()) {
-					Toast.makeText(HomeFastDialActivity.this, "点击了"+i, Toast.LENGTH_SHORT).show();
-				}
-//				if (i == quickList.size()){
-//					showContactDialog();
-//				}
+				if(i >= quickList.size())
+					return;
+				new ActionSheetDialog(HomeFastDialActivity.this)
+						.builder()
+						.setCancelable(false)
+						.setCanceledOnTouchOutside(false)
+						.addSheetItem("拨打电话", SheetItemColor.Blue,
+								new OnSheetItemClickListener() {
+									@Override
+									public void onClick(int which) {
+										onDial(i);
+									}
+								})
+						.addSheetItem("发送短信", SheetItemColor.Blue,
+								new OnSheetItemClickListener() {
+									@Override
+									public void onClick(int which) {
+										onSms(i);
+									}
+								})
+						.addSheetItem("删除联系人", SheetItemColor.Blue,
+								new OnSheetItemClickListener() {
+									@Override
+									public void onClick(int which) {
+										onDelete(i);
+									}
+								}).show();				
 				
+			}
+		});
+		addContactBtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				showContactDialog();
 			}
 		});
 	}
 	
-	private String[] lianxiren1 = new String[] { "从联系人中添加", "手动添加", "从通话记录中添加" };
+	private String[] lianxiren1 = new String[] { "从联系人中添加", "手动添加", "从通话记录中添加"};
 	
-	// 添加联系人弹出页
+	/**
+	 * 添加联系人弹出页
+	 */
 	public void showContactDialog() {
 		if (this != null) {
 			new AlertDialog.Builder(this)
@@ -170,13 +208,17 @@ public class HomeFastDialActivity extends Activity {
 	 */
 	private Bitmap contactBean2Bitmap(ContactBean cb){
 		if (0 != cb.getPhotoId()) {
+			String displayName = cb.getDisplayName();
+			if (TextUtils.isEmpty(displayName)) {
+				displayName = "";
+			}
 			Uri uri = ContentUris.withAppendedId(
 					ContactsContract.Contacts.CONTENT_URI,
 					cb.getContactId());
 			InputStream input = ContactsContract.Contacts
 					.openContactPhotoInputStream(
 							context.getContentResolver(), uri);
-			return BitmapFactory.decodeStream(input);
+			return getThumb(displayName, BitmapFactory.decodeStream(input));
 		} else {
 			String displayName = cb.getDisplayName();
 			if (!TextUtils.isEmpty(displayName)) {
@@ -187,18 +229,105 @@ public class HomeFastDialActivity extends Activity {
 		}
 	}
 
+	/**
+	 * 获取联系人图标
+	 * @param s 联系人昵称
+	 * @return
+	 */	
 	private Bitmap getThumb(String s) {
-		Bitmap bmp = Bitmap.createBitmap(150, 150, Bitmap.Config.RGB_565);
+		return getThumb(s, null);
+	}
+	
+	/**
+	 * 获取联系人图标
+	 * @param s 联系人昵称
+	 * @param bitmap 头像
+	 * @return
+	 */
+	private Bitmap getThumb(String s, Bitmap bitmap) {
+		int canvas_width = 150;
+		int canvas_height = 150;
+		Bitmap bmp = null;
+		bmp = Bitmap.createBitmap(canvas_width, canvas_height, Bitmap.Config.RGB_565);
 		Canvas canvas = new Canvas(bmp);
 		Paint paint = new Paint();
-		paint.setColor(Color.rgb(random.nextInt(128), random.nextInt(128),
-				random.nextInt(128)));
+		//如果有头像，就显示头像；没有头像就显示纯色背景
+		if (bitmap != null) {
+			float scaleWidth =  (float) canvas_width / bitmap.getWidth();
+			float scaleHeight =  (float) canvas_height / bitmap.getHeight();
+			Matrix matrix=new Matrix();
+            matrix.postScale(scaleWidth, scaleHeight);
+            canvas.drawBitmap(Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true), 0, 0, null);
+		} else {
+			paint.setColor(Color.rgb(random.nextInt(128), random.nextInt(128),
+					random.nextInt(128)));
+			canvas.drawRect(new Rect(0, 0, 150, 150), paint);
+		}
 		paint.setTextSize(24);
-		paint.setFlags(Paint.ANTI_ALIAS_FLAG);
-		canvas.drawRect(new Rect(0, 0, 150, 150), paint);
 		paint.setColor(Color.WHITE);
 		paint.setTextAlign(Paint.Align.CENTER);
+		int char_capacity_per_line = 5;
+		if(s.length() > char_capacity_per_line){
+			StringBuffer sb = new StringBuffer();
+			for (int i = 0; i + 5 < s.length(); i++) {
+				sb.append(s.substring(0, char_capacity_per_line));
+				sb.append("\n");
+			}
+			s = sb.toString();
+		}
 		canvas.drawText(s, 75, 75, paint);
 		return bmp;
+	}
+	
+	/**
+	 * 拨号
+	 * @param position
+	 */
+	public void onDial(int position) {
+		ContactBean contactBean = quickList.get(position);
+		String toPhone = contactBean.getPhoneNum();
+		Uri uri = Uri.parse("tel:" + toPhone);
+		Intent it = new Intent(Intent.ACTION_CALL, uri);
+		startActivity(it);
+	}
+
+	/**
+	 * 短信
+	 * @param position
+	 */
+	public void onSms(int position) {
+		ContactBean contactBean = quickList.get(position);
+		String threadId = getSMSThreadId(contactBean.getPhoneNum());
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("phoneNumber", contactBean.getPhoneNum());
+		map.put("threadId", threadId);
+		BaseIntentUtil.intentSysDefault(this, MessageBoxList.class, map);
+	}
+	
+	/**
+	 * 删除联系人
+	 * @param position
+	 */
+	public void onDelete(int position) {
+		mDragGridView.removeViewAt(position);
+		quickList.remove(position);
+	}
+	
+	private static String[] SMS_COLUMNS = new String[] { "thread_id" };
+	private String getSMSThreadId(String adddress) {
+		Cursor cursor = null;
+		ContentResolver contentResolver = context.getContentResolver();
+		cursor = contentResolver.query(Uri.parse("content://sms"), SMS_COLUMNS,
+				" address like '%" + adddress + "%' ", null, null);
+		String threadId = "";
+		if (cursor == null || cursor.getCount() > 0) {
+			cursor.moveToFirst();
+			threadId = cursor.getString(0);
+			cursor.close();
+			return threadId;
+		} else {
+			cursor.close();
+			return threadId;
+		}
 	}
 }
