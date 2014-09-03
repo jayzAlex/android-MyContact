@@ -29,6 +29,9 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.text.Layout.Alignment;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -207,7 +210,7 @@ public class HomeFastDialActivity extends Activity {
 	 * @return Bitmap
 	 */
 	private Bitmap contactBean2Bitmap(ContactBean cb){
-		if (0 != cb.getPhotoId()) {
+		if (0 != cb.getContactId()) {
 			String displayName = cb.getDisplayName();
 			if (TextUtils.isEmpty(displayName)) {
 				displayName = "";
@@ -250,7 +253,6 @@ public class HomeFastDialActivity extends Activity {
 		Bitmap bmp = null;
 		bmp = Bitmap.createBitmap(canvas_width, canvas_height, Bitmap.Config.RGB_565);
 		Canvas canvas = new Canvas(bmp);
-		Paint paint = new Paint();
 		//如果有头像，就显示头像；没有头像就显示纯色背景
 		if (bitmap != null) {
 			float scaleWidth =  (float) canvas_width / bitmap.getWidth();
@@ -259,23 +261,13 @@ public class HomeFastDialActivity extends Activity {
             matrix.postScale(scaleWidth, scaleHeight);
             canvas.drawBitmap(Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true), 0, 0, null);
 		} else {
+			Paint paint = new Paint();
 			paint.setColor(Color.rgb(random.nextInt(128), random.nextInt(128),
 					random.nextInt(128)));
 			canvas.drawRect(new Rect(0, 0, 150, 150), paint);
 		}
-		paint.setTextSize(24);
-		paint.setColor(Color.WHITE);
-		paint.setTextAlign(Paint.Align.CENTER);
-		int char_capacity_per_line = 5;
-		if(s.length() > char_capacity_per_line){
-			StringBuffer sb = new StringBuffer();
-			for (int i = 0; i + 5 < s.length(); i++) {
-				sb.append(s.substring(0, char_capacity_per_line));
-				sb.append("\n");
-			}
-			s = sb.toString();
-		}
-		canvas.drawText(s, 75, 75, paint);
+		drawPhoneText(s, canvas);
+
 		return bmp;
 	}
 	
@@ -328,6 +320,38 @@ public class HomeFastDialActivity extends Activity {
 		} else {
 			cursor.close();
 			return threadId;
+		}
+	}
+	
+	/**
+	 * Draw text on the canvas, if the text's length is more than 5 chars, we
+	 * draw multi-line on the canvas, else draw single line. As a result, it
+	 * will be more good-looking.
+	 * 
+	 * @param s
+	 * @param canvas
+	 */
+	public void drawPhoneText(String s, Canvas canvas) {
+		if (TextUtils.isEmpty(s))
+			return;
+		if (s.length() <= 5) {
+			Paint paint = new Paint();
+			paint.setTextSize(24);
+			paint.setColor(Color.WHITE);
+			paint.setTextAlign(Paint.Align.CENTER);
+			paint.setAntiAlias(true);
+			canvas.drawText(s, 75, 75, paint);
+		} else {
+			TextPaint textPaint = new TextPaint();
+			textPaint.setARGB(0xFF, 0xFF, 0xFF, 0xFF);
+			textPaint.setTextSize(24.0F);
+			textPaint.setAntiAlias(true);
+			StaticLayout layout = new StaticLayout(s, textPaint, 110,
+					Alignment.ALIGN_CENTER, 1.0F, 0.0F, true);
+			canvas.save();
+			canvas.translate(20, 30);
+			layout.draw(canvas);
+			canvas.restore();
 		}
 	}
 }

@@ -1,5 +1,6 @@
 package xu.ye.view;
 
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,6 +17,7 @@ import xu.ye.view.adapter.T9Adapter;
 import android.app.Activity;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -24,6 +26,7 @@ import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CallLog;
+import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -287,6 +290,21 @@ public class HomeDialActivity extends Activity implements OnClickListener {
 		});
 	}
 	
+	public long phonenumber2contactid(String phonenumber) {
+		// 通话电话号码获取头像uri
+		Uri uriNumber2Contacts = Uri.parse("content://com.android.contacts/"
+				+ "data/phones/filter/" + phonenumber);
+		Cursor cursorCantacts = this.getContentResolver().query(
+				uriNumber2Contacts, null, null, null, null);
+		if (cursorCantacts.getCount() > 0) { // 若游标不为0则说明有头像,游标指向第一条记录
+			cursorCantacts.moveToFirst();
+			return cursorCantacts.getLong(cursorCantacts
+					.getColumnIndex("contact_id"));
+		} else {// 么有头像设置默认头像
+			return 0;
+		}
+	}
+	
 	
 	
 	public void onClick(View v) {
@@ -397,12 +415,6 @@ public class HomeDialActivity extends Activity implements OnClickListener {
 		Intent it = new Intent(Intent.ACTION_CALL, uri);
 		startActivity(it);
 	}
-	
-	
-	
-	
-	
-	
 
 	public void dialPadShow(){
 		if(bohaopan.getVisibility() == View.VISIBLE){

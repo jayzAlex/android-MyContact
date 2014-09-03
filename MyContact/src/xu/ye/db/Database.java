@@ -11,7 +11,7 @@ public class Database {
 	private final String DATABASE_FILENAME = "RKET_DICTIONARY"; 
 	private SQLiteDatabase database;
 	
-	public  SQLiteDatabase openDatabase()   
+	public  SQLiteDatabase openDatabase()
 	{   
 		
 	    try  
