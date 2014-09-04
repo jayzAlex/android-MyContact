@@ -58,17 +58,19 @@ public class HomeFastDialActivity extends Activity {
 	private Context context;
 	private ArrayList<ContactBean> quickList;
 	private Button addContactBtn;
+	private DbUtils dbUtils;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		System.out.println("=====onCreate=====");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home_fastdial_page);
 		mDragGridView = ((DragGridView) findViewById(R.id.vgv));
 		context = getApplicationContext();
 		addContactBtn = (Button) findViewById(R.id.addContactBtn);
-        DbUtils dbUtils = new DbUtils(context);
-        quickList = dbUtils.getQuick();
-        initQuickViews();
+		dbUtils = new DbUtils(context);
+		quickList = dbUtils.getQuick();
+		initQuickViews();
 		setListeners();
 	}
 	
@@ -76,10 +78,10 @@ public class HomeFastDialActivity extends Activity {
 	 * 初始化一键拨号联系人列表
 	 */	
 	public void initQuickViews(){
+		System.out.println("=====initQuickViews===== quickList:" + quickList.size());
 		for (int i = 0; i < quickList.size(); i++){
 			ContactBean cb = quickList.get(i);
 			if (cb != null) {
-				quickList.add(cb);
 				CircularImage view = new CircularImage(this);
 				view.setImageBitmap(contactBean2Bitmap(cb));
 				mDragGridView.addView(view);
@@ -90,6 +92,12 @@ public class HomeFastDialActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		System.out.println("=====onPause=====");
 	}
 
 	private void setListeners() {
@@ -198,7 +206,8 @@ public class HomeFastDialActivity extends Activity {
 			if (resultContactBean != null) {
 				CircularImage view = new CircularImage(HomeFastDialActivity.this);
 				view.setImageBitmap(contactBean2Bitmap(resultContactBean));
-				mDragGridView.addView(view, quickList.size());
+//				mDragGridView.addView(view, quickList.size());
+				mDragGridView.addView(view);
 				quickList.add(resultContactBean);
 			}
 		}
@@ -248,6 +257,7 @@ public class HomeFastDialActivity extends Activity {
 	 * @return
 	 */
 	private Bitmap getThumb(String s, Bitmap bitmap) {
+		System.out.println("=====getThumb=====");
 		int canvas_width = 150;
 		int canvas_height = 150;
 		Bitmap bmp = null;
@@ -326,7 +336,7 @@ public class HomeFastDialActivity extends Activity {
 	/**
 	 * Draw text on the canvas, if the text's length is more than 5 chars, we
 	 * draw multi-line on the canvas, else draw single line. As a result, it
-	 * will be more good-looking.
+	 * is more good-looking.
 	 * 
 	 * @param s
 	 * @param canvas
@@ -352,6 +362,20 @@ public class HomeFastDialActivity extends Activity {
 			canvas.translate(20, 30);
 			layout.draw(canvas);
 			canvas.restore();
+		}
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if (dbUtils != null) {
+			dbUtils.deleteQuick();
+			for (int i = 0; i < quickList.size(); i++) {
+				ContactBean cb = quickList.get(i);
+				if (cb != null) {
+					dbUtils.saveQuickByPosition(i, cb);
+				}
+			}
 		}
 	}
 }

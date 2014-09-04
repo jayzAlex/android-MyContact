@@ -31,7 +31,7 @@ public class CircularImage extends MaskedImage {
 		float f1 = getWidth();
 		float f2 = getHeight();
 		RectF localRectF = new RectF(0.0F, 0.0F, f1, f2);
-		System.out.println("f1: " + f1 + " f2:" + f2);
+//		System.out.println("f1: " + f1 + " f2:" + f2);
 		localCanvas.drawOval(localRectF, localPaint);
 		return localBitmap;
 	}

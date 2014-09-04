@@ -280,12 +280,12 @@ public class HomeDialActivity extends Activity implements OnClickListener {
 				contactBean.setBlkwhi(getIntent().getStringExtra("blkwhi"));
 				if(getIntent().getIntExtra("flag", -1) == HomeContactActivity.INTENT_SELECT_CONTACTBEAN){
 					Intent intent = getIntent();
+					contactBean.setContactId((int)phonenumber2contactid(cb.getNumber()));
 					intent.putExtra("ContactBean", contactBean);
 					setResult(1, intent);
 					finish();
 					return;
 				}
-				
 			}
 		});
 	}

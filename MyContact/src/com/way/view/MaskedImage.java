@@ -63,7 +63,7 @@ public abstract class MaskedImage extends ImageView {
 			int i = paramCanvas.saveLayer(0.0F, 0.0F, f1, f2, null, 31);
 			int j = getWidth();
 			int k = getHeight();
-			System.out.println("j:"+j+" k:"+k);
+//			System.out.println("j:"+j+" k:"+k);
 			localDrawable.setBounds(0, 0, j, k);
 			localDrawable.draw(paramCanvas);
 			if ((this.mask == null) || (this.mask.isRecycled()) || true) {
@@ -78,7 +78,7 @@ public abstract class MaskedImage extends ImageView {
 		} catch (Exception localException) {
 			StringBuilder localStringBuilder = new StringBuilder()
 					.append("Attempting to draw with recycled bitmap. View ID = ");
-			System.out.println("localStringBuilder=="+localStringBuilder);
+//			System.out.println("localStringBuilder=="+localStringBuilder);
 		}
 	}
 }

@@ -166,7 +166,7 @@ public class ContactBean implements Parcelable{
 	private String formattedNumber;
 	private String pinyin;
 	private String blkwhi;
-	private int position = -1;
+	private int _id = -1;
 	
 	public ContactBean(){
 		
@@ -176,16 +176,16 @@ public class ContactBean implements Parcelable{
 		readFromParcel(in);
 	}
 	
-	public ContactBean(String phoneNum, String blkwhi, int position) {
+	public ContactBean(String phoneNum, String blkwhi, int _id) {
 		super();
 		this.phoneNum = phoneNum;
 		this.blkwhi = blkwhi;
-		this.position = position;
+		this._id = _id;
 	}
 
 	public ContactBean(int contactId, String displayName, String phoneNum,
 			String sortKey, Long photoId, String lookUpKey, int selected,
-			String formattedNumber, String pinyin, String blkwhi, int position) {
+			String formattedNumber, String pinyin, String blkwhi, int _id) {
 		super();
 		this.contactId = contactId;
 		this.displayName = displayName;
@@ -197,12 +197,11 @@ public class ContactBean implements Parcelable{
 		this.formattedNumber = formattedNumber;
 		this.pinyin = pinyin;
 		this.blkwhi = blkwhi;
-		this.position = position;
+		this._id = _id;
 	}
 
 	@Override
 	public int describeContents() {
-		
 		return 0;
 	}
 
@@ -218,7 +217,7 @@ public class ContactBean implements Parcelable{
 		dest.writeString(formattedNumber);
 		dest.writeString(pinyin);
 		dest.writeString(blkwhi);
-		dest.writeInt(position);
+		dest.writeInt(_id);
 	}
 	
 	private void readFromParcel(Parcel in){
@@ -232,7 +231,7 @@ public class ContactBean implements Parcelable{
 		formattedNumber = in.readString();
 		pinyin = in.readString();
 		blkwhi = in.readString();
-		position = in.readInt();
+		_id = in.readInt();
 	}
 	
 	public static final Parcelable.Creator CREATOR = new Parcelable.Creator<ContactBean>() {
@@ -312,12 +311,12 @@ public class ContactBean implements Parcelable{
 		this.blkwhi = blkwhi;
 	}
 
-	public int getPosition() {
-		return position;
+	public int getId() {
+		return _id;
 	}
 
-	public void setPosition(int position) {
-		this.position = position;
+	public void setId(int _id) {
+		this._id = _id;
 	}
 
 	@Override
@@ -327,7 +326,7 @@ public class ContactBean implements Parcelable{
 				+ sortKey + ", photoId=" + photoId + ", lookUpKey=" + lookUpKey
 				+ ", selected=" + selected + ", formattedNumber="
 				+ formattedNumber + ", pinyin=" + pinyin + ", blkwhi=" + blkwhi
-				+ ", position=" + position + "]";
+				+ ", _id=" + _id + "]";
 	}
 }
 

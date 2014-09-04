@@ -159,7 +159,7 @@ public class DbUtils {
 			values.put("FORMATTEDNUMBER", blkwhi.getFormattedNumber());
 			values.put("PINYIN", blkwhi.getPinyin());
 			values.put("BLKWHI", blkwhi.getBlkwhi());
-			values.put("POSITION", blkwhi.getPosition());
+			values.put("POSITION", blkwhi.getId());
 			if (c.getCount() > 0) {
 				String args[] = { phonenum };
 				sdb.update("BLKWHI", values, "PHONENUM = ?", args);
@@ -209,11 +209,11 @@ public class DbUtils {
 	 * @param position
 	 * @return
 	 */
-	public boolean saveQuickByPosition(int position, ContactBean blkwhi) {
+	public boolean saveQuickByPosition(int _id, ContactBean blkwhi) {
 		try {
 			
 			SQLiteDatabase sdb = openDatabase();
-			String sql = "select * from QUICK where POSITION = '" + position + "'";
+			String sql = "select * from QUICK where _ID = '" + _id + "'";
 			Cursor c = sdb.rawQuery(sql, null);
 //			Log.i("save QUICK", "sql" + sql);
 			ContentValues values = new ContentValues();
@@ -226,12 +226,13 @@ public class DbUtils {
 			values.put("SELECTED", blkwhi.getSelected());
 			values.put("FORMATTEDNUMBER", blkwhi.getFormattedNumber());
 			values.put("PINYIN", blkwhi.getPinyin());
-			values.put("POSITION", blkwhi.getPosition());
-			if (c.getCount() > 0) {
-				String args[] = { position+"" };
-				sdb.update("QUICK", values, "POSITION = ?", args);
-//				Log.i("save", "update QUICK"+position);
-			}
+			values.put("_ID", blkwhi.getId());
+//			if (c.getCount() > 0) {
+//				String args[] = { position+"" };
+//				sdb.update("QUICK", values, "ID = ?", args);
+////				Log.i("save", "update QUICK"+position);
+//			}
+			sdb.insert("QUICK", null, values);
 			c.close();
 			if (sdb != null)
 				sdb.close();
@@ -323,11 +324,17 @@ public class DbUtils {
 		return true;
 	}
 	
+	public void deleteQuick(){
+		SQLiteDatabase sdb = openDatabase();
+		sdb.delete("QUICK", null, null);
+		sdb.close();
+	}
+	
 	public ArrayList<ContactBean> getQuick() {
 		ContactBean bean = null;
 		SQLiteDatabase sdb = openDatabase();
 		ArrayList<ContactBean> list = new ArrayList<ContactBean>();
-		String sql = "select * from QUICK where phonenum is not null and phonenum != '' order by position desc";
+		String sql = "select * from QUICK where phonenum is not null and phonenum != '' order by _id";
 		Cursor c = sdb.rawQuery( sql, null);
 		while (c.moveToNext()) {
 			bean = new ContactBean(c.getInt(c.getColumnIndex("CONTACTID")),
@@ -340,7 +347,7 @@ public class DbUtils {
 					c.getString(c.getColumnIndex("FORMATTEDNUMBER")),
 					c.getString(c.getColumnIndex("PINYIN")),
 					"",
-					c.getInt(c.getColumnIndex("POSITION")));
+					c.getInt(c.getColumnIndex("_ID")));
 			list.add(bean);
 		}
 		c.close();

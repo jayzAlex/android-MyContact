@@ -12,7 +12,7 @@ public class Database {
 	private SQLiteDatabase database;
 	
 	public  SQLiteDatabase openDatabase()
-	{   
+	{
 		
 	    try  
 	    {   
