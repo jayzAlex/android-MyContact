@@ -160,6 +160,7 @@ public class DbUtils {
 			values.put("PINYIN", blkwhi.getPinyin());
 			values.put("BLKWHI", blkwhi.getBlkwhi());
 			values.put("POSITION", blkwhi.getId());
+			values.put("BACKGROUNDCOLOR", blkwhi.getBackgroundColor());
 			if (c.getCount() > 0) {
 				String args[] = { phonenum };
 				sdb.update("BLKWHI", values, "PHONENUM = ?", args);
@@ -211,7 +212,6 @@ public class DbUtils {
 	 */
 	public boolean saveQuickByPosition(int _id, ContactBean blkwhi) {
 		try {
-			
 			SQLiteDatabase sdb = openDatabase();
 			String sql = "select * from QUICK where _ID = '" + _id + "'";
 			Cursor c = sdb.rawQuery(sql, null);
@@ -226,7 +226,8 @@ public class DbUtils {
 			values.put("SELECTED", blkwhi.getSelected());
 			values.put("FORMATTEDNUMBER", blkwhi.getFormattedNumber());
 			values.put("PINYIN", blkwhi.getPinyin());
-			values.put("_ID", blkwhi.getId());
+			values.put("_ID", _id);
+			values.put("BACKGROUNDCOLOR", blkwhi.getBackgroundColor());
 //			if (c.getCount() > 0) {
 //				String args[] = { position+"" };
 //				sdb.update("QUICK", values, "ID = ?", args);
@@ -347,7 +348,8 @@ public class DbUtils {
 					c.getString(c.getColumnIndex("FORMATTEDNUMBER")),
 					c.getString(c.getColumnIndex("PINYIN")),
 					"",
-					c.getInt(c.getColumnIndex("_ID")));
+					c.getInt(c.getColumnIndex("_ID")),
+					c.getInt(c.getColumnIndex("BACKGROUNDCOLOR")));
 			list.add(bean);
 		}
 		c.close();

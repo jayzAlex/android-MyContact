@@ -62,7 +62,6 @@ public class HomeFastDialActivity extends Activity {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		System.out.println("=====onCreate=====");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home_fastdial_page);
 		mDragGridView = ((DragGridView) findViewById(R.id.vgv));
@@ -78,7 +77,6 @@ public class HomeFastDialActivity extends Activity {
 	 * 初始化一键拨号联系人列表
 	 */	
 	public void initQuickViews(){
-		System.out.println("=====initQuickViews===== quickList:" + quickList.size());
 		for (int i = 0; i < quickList.size(); i++){
 			ContactBean cb = quickList.get(i);
 			if (cb != null) {
@@ -97,7 +95,6 @@ public class HomeFastDialActivity extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		System.out.println("=====onPause=====");
 	}
 
 	private void setListeners() {
@@ -206,7 +203,6 @@ public class HomeFastDialActivity extends Activity {
 			if (resultContactBean != null) {
 				CircularImage view = new CircularImage(HomeFastDialActivity.this);
 				view.setImageBitmap(contactBean2Bitmap(resultContactBean));
-//				mDragGridView.addView(view, quickList.size());
 				mDragGridView.addView(view);
 				quickList.add(resultContactBean);
 			}
@@ -218,19 +214,14 @@ public class HomeFastDialActivity extends Activity {
 	 * @param cb
 	 * @return Bitmap
 	 */
-	private Bitmap contactBean2Bitmap(ContactBean cb){
+	private Bitmap contactBean2Bitmap(ContactBean cb) {
 		if (0 != cb.getContactId()) {
 			String displayName = cb.getDisplayName();
 			if (TextUtils.isEmpty(displayName)) {
 				displayName = "";
 			}
-			Uri uri = ContentUris.withAppendedId(
-					ContactsContract.Contacts.CONTENT_URI,
-					cb.getContactId());
-			InputStream input = ContactsContract.Contacts
-					.openContactPhotoInputStream(
-							context.getContentResolver(), uri);
-			return getThumb(displayName, BitmapFactory.decodeStream(input));
+//			return getThumb(displayName, contactid2bitmap(cb.getContactId()));
+			return getThumb(displayName, cb);
 		} else {
 			String displayName = cb.getDisplayName();
 			if (!TextUtils.isEmpty(displayName)) {
@@ -239,6 +230,14 @@ public class HomeFastDialActivity extends Activity {
 				return getThumb(cb.getPhoneNum());
 			}
 		}
+	}
+	
+	public Bitmap contactid2bitmap(int contactid) {
+		Uri uri = ContentUris.withAppendedId(
+				ContactsContract.Contacts.CONTENT_URI, contactid);
+		InputStream input = ContactsContract.Contacts
+				.openContactPhotoInputStream(context.getContentResolver(), uri);
+		return BitmapFactory.decodeStream(input);
 	}
 
 	/**
@@ -256,14 +255,16 @@ public class HomeFastDialActivity extends Activity {
 	 * @param bitmap 头像
 	 * @return
 	 */
-	private Bitmap getThumb(String s, Bitmap bitmap) {
-		System.out.println("=====getThumb=====");
+	private Bitmap getThumb(String s, ContactBean cb) {
 		int canvas_width = 150;
 		int canvas_height = 150;
 		Bitmap bmp = null;
 		bmp = Bitmap.createBitmap(canvas_width, canvas_height, Bitmap.Config.RGB_565);
 		Canvas canvas = new Canvas(bmp);
 		//如果有头像，就显示头像；没有头像就显示纯色背景
+		Bitmap bitmap = null;
+		if(cb != null)
+			bitmap = contactid2bitmap(cb.getContactId());
 		if (bitmap != null) {
 			float scaleWidth =  (float) canvas_width / bitmap.getWidth();
 			float scaleHeight =  (float) canvas_height / bitmap.getHeight();
@@ -272,12 +273,17 @@ public class HomeFastDialActivity extends Activity {
             canvas.drawBitmap(Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true), 0, 0, null);
 		} else {
 			Paint paint = new Paint();
-			paint.setColor(Color.rgb(random.nextInt(128), random.nextInt(128),
-					random.nextInt(128)));
+			if (cb.getBackgroundColor() == 0) {
+				int color = Color.rgb(random.nextInt(128), random.nextInt(128),
+						random.nextInt(128));
+				paint.setColor(color);
+				cb.setBackgroundColor(color);
+			} else {
+				paint.setColor(cb.getBackgroundColor());
+			}
 			canvas.drawRect(new Rect(0, 0, 150, 150), paint);
 		}
 		drawPhoneText(s, canvas);
-
 		return bmp;
 	}
 	

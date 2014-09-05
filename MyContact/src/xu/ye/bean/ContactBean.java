@@ -167,6 +167,7 @@ public class ContactBean implements Parcelable{
 	private String pinyin;
 	private String blkwhi;
 	private int _id = -1;
+	private int backgroundColor;
 	
 	public ContactBean(){
 		
@@ -185,6 +186,24 @@ public class ContactBean implements Parcelable{
 
 	public ContactBean(int contactId, String displayName, String phoneNum,
 			String sortKey, Long photoId, String lookUpKey, int selected,
+			String formattedNumber, String pinyin, String blkwhi, int _id, int backgroundColor) {
+		super();
+		this.contactId = contactId;
+		this.displayName = displayName;
+		this.phoneNum = phoneNum;
+		this.sortKey = sortKey;
+		this.photoId = photoId;
+		this.lookUpKey = lookUpKey;
+		this.selected = selected;
+		this.formattedNumber = formattedNumber;
+		this.pinyin = pinyin;
+		this.blkwhi = blkwhi;
+		this._id = _id;
+		this.backgroundColor = backgroundColor;
+	}
+	
+	public ContactBean(int contactId, String displayName, String phoneNum,
+			String sortKey, Long photoId, String lookUpKey, int selected,
 			String formattedNumber, String pinyin, String blkwhi, int _id) {
 		super();
 		this.contactId = contactId;
@@ -198,7 +217,7 @@ public class ContactBean implements Parcelable{
 		this.pinyin = pinyin;
 		this.blkwhi = blkwhi;
 		this._id = _id;
-	}
+	}	
 
 	@Override
 	public int describeContents() {
@@ -218,6 +237,7 @@ public class ContactBean implements Parcelable{
 		dest.writeString(pinyin);
 		dest.writeString(blkwhi);
 		dest.writeInt(_id);
+		dest.writeInt(backgroundColor);
 	}
 	
 	private void readFromParcel(Parcel in){
@@ -232,6 +252,7 @@ public class ContactBean implements Parcelable{
 		pinyin = in.readString();
 		blkwhi = in.readString();
 		_id = in.readInt();
+		backgroundColor = in.readInt();
 	}
 	
 	public static final Parcelable.Creator CREATOR = new Parcelable.Creator<ContactBean>() {
@@ -319,6 +340,14 @@ public class ContactBean implements Parcelable{
 		this._id = _id;
 	}
 
+	public int getBackgroundColor() {
+		return backgroundColor;
+	}
+
+	public void setBackgroundColor(int backgroundColor) {
+		this.backgroundColor = backgroundColor;
+	}
+
 	@Override
 	public String toString() {
 		return "Blkwhi [contactId=" + contactId + ", displayName="
@@ -326,7 +355,7 @@ public class ContactBean implements Parcelable{
 				+ sortKey + ", photoId=" + photoId + ", lookUpKey=" + lookUpKey
 				+ ", selected=" + selected + ", formattedNumber="
 				+ formattedNumber + ", pinyin=" + pinyin + ", blkwhi=" + blkwhi
-				+ ", _id=" + _id + "]";
+				+ ", _id=" + _id + ", backgroundColor=" + backgroundColor +"]";
 	}
 }
 
