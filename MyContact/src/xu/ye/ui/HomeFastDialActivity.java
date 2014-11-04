@@ -45,9 +45,6 @@ import com.u1aryz.android.lib.newpopupmenu.PopupMenu.OnItemSelectedListener;
 import com.way.view.CircularImage;
 import com.way.view.DragGridView;
 import com.way.view.DragGridView.OnRearrangeListener;
-import com.zf.iosdialog.widget.ActionSheetDialog;
-import com.zf.iosdialog.widget.ActionSheetDialog.OnSheetItemClickListener;
-import com.zf.iosdialog.widget.ActionSheetDialog.SheetItemColor;
 
 /**
  * MainActivity
