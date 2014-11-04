@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 import xu.ye.R;
 import xu.ye.bean.ContactBean;
-import xu.ye.view.ui.QuickAlphabeticBar;
+import xu.ye.view.QuickAlphabeticBar;
 import android.content.ContentUris;
 import android.content.Context;
 import android.graphics.Bitmap;

@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-    <xu.ye.view.ui.MenuHorizontalScrollView
+    <xu.ye.view.MenuHorizontalScrollView
         android:id="@+id/mScrollView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -17,8 +17,8 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:background="#00ffffff"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
         </LinearLayout>
-    </xu.ye.view.ui.MenuHorizontalScrollView>
+    </xu.ye.view.MenuHorizontalScrollView>
 
 </LinearLayout>

@@ -10,25 +10,25 @@
         android:orientation="horizontal"
         android:weightSum="3" >
 
-        <xu.ye.view.ui.RadioButtonCenter
+        <xu.ye.view.RadioButtonCenter
             android:id="@+id/blackList"
             android:layout_width="match_parent"
             android:layout_height="80dip"
             android:layout_weight="1"
             android:button="@drawable/rd_blacklist_selector"
             android:gravity="bottom" >
-        </xu.ye.view.ui.RadioButtonCenter>
+        </xu.ye.view.RadioButtonCenter>
 
-        <xu.ye.view.ui.RadioButtonCenter
+        <xu.ye.view.RadioButtonCenter
             android:id="@+id/whiteList"
             android:layout_width="match_parent"
             android:layout_height="80dip"
             android:layout_weight="1"
             android:button="@drawable/rd_whitelist_selector"
             android:gravity="bottom" >
-        </xu.ye.view.ui.RadioButtonCenter>
+        </xu.ye.view.RadioButtonCenter>
 
-        <xu.ye.view.ui.RadioButtonCenter
+        <xu.ye.view.RadioButtonCenter
             android:id="@+id/allList"
             android:layout_width="match_parent"
             android:layout_height="80dip"
@@ -36,7 +36,7 @@
             android:button="@drawable/rd_alllist_selector"
             android:checked="true"
             android:gravity="bottom" >
-        </xu.ye.view.ui.RadioButtonCenter>
+        </xu.ye.view.RadioButtonCenter>
     </RadioGroup>
 
     <LinearLayout

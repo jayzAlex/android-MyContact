@@ -9,4 +9,8 @@
 	<string name="no_more_sms">没有更多的信息了</string>
     <string name="button1Text">Add Word</string>
     <string name="button2Text">View Poem</string>
+    <string name="dial">拨打电话</string>
+    <string name="sms">发送短信</string>
+    <string name="delete">删除联系人</string>
+    <string name="please_choose">请选择：</string>
 </resources>
