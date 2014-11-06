@@ -262,9 +262,9 @@ public class HomeFastDialActivity extends Activity {
 		} else {
 			String displayName = cb.getDisplayName();
 			if (!TextUtils.isEmpty(displayName)) {
-				return getThumb(displayName);
+				return getThumb(displayName, cb);
 			} else {
-				return getThumb(cb.getPhoneNum());
+				return getThumb(cb.getPhoneNum(), cb);
 			}
 		}
 	}
@@ -277,14 +277,14 @@ public class HomeFastDialActivity extends Activity {
 		return BitmapFactory.decodeStream(input);
 	}
 
-	/**
-	 * 获取联系人图标
-	 * @param s 联系人昵称
-	 * @return
-	 */	
-	private Bitmap getThumb(String s) {
-		return getThumb(s, null);
-	}
+//	/**
+//	 * 获取联系人图标
+//	 * @param s 联系人昵称
+//	 * @return
+//	 */	
+//	private Bitmap getThumb(String s) {
+//		return getThumb(s, null);
+//	}
 	
 	/**
 	 * 获取联系人图标

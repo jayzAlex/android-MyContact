@@ -77,7 +77,7 @@ public class HomeDialActivity extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.home_dial_page);
+		setContentView(R.layout.home_dial_page2);
 		
 		application = (MyApplication)getApplication();
 		listView = (ListView) findViewById(R.id.contact_list);

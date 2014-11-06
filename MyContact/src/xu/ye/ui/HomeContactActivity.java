@@ -1,134 +1,110 @@
+// @author Bhavya Mehta
 package xu.ye.ui;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.Locale;
 
 import xu.ye.R;
 import xu.ye.bean.ContactBean;
-import xu.ye.bean.GroupBean;
-import xu.ye.uitl.BaseIntentUtil;
-import xu.ye.view.MenuHorizontalScrollView;
-import xu.ye.view.QuickAlphabeticBar;
-import xu.ye.view.adapter.ContactHomeAdapter;
-import xu.ye.view.adapter.MenuListAdapter;
-import xu.ye.view.other.SizeCallBackForMenu;
-import xu.ye.view.sms.MessageBoxList;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.AsyncQueryHandler;
-import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.provider.ContactsContract.CommonDataKinds.GroupMembership;
-import android.provider.ContactsContract.Groups;
-import android.view.KeyEvent;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup.MarginLayoutParams;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
+import com.example.listviewfilter.IPinnedListFilter;
+import com.example.listviewfilter.PinnedHeaderAdapter;
+import com.example.listviewfilter.ui.IndexBarView;
+import com.example.listviewfilter.ui.PinnedHeaderListView;
 
-public class HomeContactActivity extends Activity {
+// Activity that display customized list view and search box
+public class HomeContactActivity extends Activity implements IPinnedListFilter{
 
-	private MenuHorizontalScrollView scrollView;
-	private ListView menuList;
-	private View acbuwaPage;
-	private Button menuBtn;
-	private MenuListAdapter menuListAdapter;
-	private View[] children;
-	private LayoutInflater inflater;
-	private ContactHomeAdapter adapter;
-	private ListView personList;
-	private List<ContactBean> list;
-	private AsyncQueryHandler asyncQuery;
-	private QuickAlphabeticBar alpha;
-	private Button addContactBtn;
-	private Map<Integer, ContactBean> contactIdMap = null;
-	private LinearLayout titleLayout;
-	private TextView title;
-	public static final int INTENT_SELECT_CONTACTBEAN = 1;
-	private static final String TAG = "HomeContactActivity";
-	/**
-	 * 上次第一个可见元素，用于滚动时记录标识。
-	 */
-	private int lastFirstVisibleItem = -1;	
+	// unsorted list items
+	ArrayList<String> mItems;
+
+	// array list to store section positions
+	ArrayList<Integer> mListSectionPos;
+
+	// array list to store listView data
+	ArrayList<String> mListItems;
+
+	// custom list view with pinned header
+	PinnedHeaderListView mListView;
+
+	// custom adapter
+	PinnedHeaderAdapter mAdaptor;
+
+	// search box
+	EditText mSearchView;
+
+	// loading view
+	ProgressBar mLoadingView;
+
+	// empty view
+	TextView mEmptyView;
+
+	HashMap<Integer, ContactBean> contactIdMap;
+
+	ArrayList<ContactBean> list;
+
+	HashMap<String, ContactBean> contactMap;
+
+	private MyAsyncQueryHandler asyncQuery;
 	
+	public static final int INTENT_SELECT_CONTACTBEAN = 1;
 
-	public void onCreate(Bundle savedInstanceState) {
-
+	@SuppressWarnings("unchecked")
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		inflater = LayoutInflater.from(this);
-		setContentView(inflater.inflate(R.layout.menu_scroll_view, null));
 
-		scrollView = (MenuHorizontalScrollView)findViewById(R.id.mScrollView);
-		menuListAdapter = new MenuListAdapter(this, queryGroup());
-		menuList = (ListView)findViewById(R.id.menuList);
-		menuList.setAdapter(menuListAdapter);
+		// UI elements
+		setupViews();
 
-
-		acbuwaPage = inflater.inflate(R.layout.home_contact_page, null);
-		menuBtn = (Button)this.acbuwaPage.findViewById(R.id.menuBtn);
-
-		personList = (ListView)this.acbuwaPage.findViewById(R.id.acbuwa_list);
-		
-		titleLayout = (LinearLayout) this.acbuwaPage.findViewById(R.id.title_layout); 
-		title = (TextView) this.acbuwaPage.findViewById(R.id.title);
-
-		alpha = (QuickAlphabeticBar)this.acbuwaPage.findViewById(R.id.fast_scroller);
+//		// Array to ArrayList
+//		mItems = new ArrayList<String>(Arrays.asList(ITEMS));
+		mItems = new ArrayList<String>();
 		asyncQuery = new MyAsyncQueryHandler(getContentResolver());
 		init();
+		mListSectionPos = new ArrayList<Integer>();
+		mListItems = new ArrayList<String>();
 
-		menuBtn.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				scrollView.clickMenuBtn(HomeContactActivity.this);
-			}
-		});
-
-
-
-
-		View leftView = new View(this);
-		leftView.setBackgroundColor(Color.TRANSPARENT);
-		children = new View[]{leftView, acbuwaPage};
-		scrollView.initViews(children, new SizeCallBackForMenu(this.menuBtn), this.menuList);
-		scrollView.setMenuBtn(this.menuBtn);
-
-		addContactBtn = (Button) findViewById(R.id.addContactBtn);
-		addContactBtn.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				Uri insertUri = android.provider.ContactsContract.Contacts.CONTENT_URI;
-				Intent intent = new Intent(Intent.ACTION_INSERT, insertUri);
-				startActivityForResult(intent, 1008);
-			}
-		});
-
-		startReceiver1();
+//		// for handling configuration change
+//		if (savedInstanceState != null) {
+//			mListItems = savedInstanceState.getStringArrayList("mListItems");
+//			mListSectionPos = savedInstanceState.getIntegerArrayList("mListSectionPos");
+//
+//			if (mListItems != null && mListItems.size() > 0 && mListSectionPos != null && mListSectionPos.size() > 0) {
+//				setListAdaptor();
+//			}
+//
+//			String constraint = savedInstanceState.getString("constraint");
+//			if (constraint != null && constraint.length() > 0) {
+//				mSearchView.setText(constraint);
+//				setIndexBarViewVisibility(constraint);
+//			}
+//		} else {
+//			new Poplulate().execute(mItems);
+//		}
 	}
-
+	
 	private void init(){
+		showLoading(mListView, mLoadingView, mEmptyView);
 		Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI; // 联系人的Uri
 		String[] projection = { 
 				ContactsContract.CommonDataKinds.Phone._ID,
@@ -142,19 +118,7 @@ public class HomeContactActivity extends Activity {
 		asyncQuery.startQuery(0, null, uri, projection, null, null,
 				"sort_key COLLATE LOCALIZED asc"); // 按照sort_key升序查询
 	}
-
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		
-		if(keyCode == KeyEvent.KEYCODE_BACK){
-			if(MenuHorizontalScrollView.menuOut == true)
-				this.scrollView.clickMenuBtn(HomeContactActivity.this);
-			else
-				this.finish();
-			return true;
-		}
-		return super.onKeyDown(keyCode, event);
-	}	
-
+	
 	/**
 	 * 数据库异步查询类AsyncQueryHandler
 	 * 
@@ -203,410 +167,249 @@ public class HomeContactActivity extends Activity {
 						cb.setPhotoId(photoId);
 						cb.setLookUpKey(lookUpKey);
 						list.add(cb);
-						
 						contactIdMap.put(contactId, cb);
-						
+						mItems.add(sortKey);
 					}
 				}
 				if (list.size() > 0) {
-					setAdapter(list);
+//					setAdapter(list);
+					new Poplulate().execute(mItems);
+				} else {
+					showEmptyText(mListView, mLoadingView, mEmptyView);
 				}
 			}
 		}
 
 	}
 
+	private void setupViews() {
+		setContentView(R.layout.main_act);
+		mSearchView = (EditText) findViewById(R.id.search_view);
+		mLoadingView = (ProgressBar) findViewById(R.id.loading_view);
+		mListView = (PinnedHeaderListView) findViewById(R.id.list_view);
+		mEmptyView = (TextView) findViewById(R.id.empty_view);
+	}
 
-	private void setAdapter(List<ContactBean> list) {
-		adapter = new ContactHomeAdapter(this, list, alpha);
-		personList.setAdapter(adapter);
-		alpha.init(HomeContactActivity.this);
-		alpha.setListView(personList);
-		alpha.setHight(alpha.getHeight());
-		alpha.setVisibility(View.VISIBLE);
-		personList.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				ContactBean cb = (ContactBean) adapter.getItem(position);
-				cb.setBlkwhi(getIntent().getStringExtra("blkwhi"));
-				if(getIntent().getIntExtra("flag", -1) == INTENT_SELECT_CONTACTBEAN){
-					Intent intent = getIntent();
-					intent.putExtra("ContactBean", cb);
-					setResult(1, intent);
-					finish();
-					return;
-				}
-				showContactDialog(lianxiren1, cb, position);
-			}
-		});
-		
-		personList.setOnScrollListener(new OnScrollListener() {
-			
-			@Override
-			public void onScrollStateChanged(AbsListView view, int scrollState) {
-				
-			}
-			
-			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem,
-					int visibleItemCount, int totalItemCount) {
-				int section = adapter.getSectionForPosition(firstVisibleItem);
-				System.out.println("==>section " + section);
-				//TODO
-				int nextSecPosition = adapter.getPositionForSection(section + 1);
-				if (firstVisibleItem != lastFirstVisibleItem) {
-					MarginLayoutParams params = (MarginLayoutParams) titleLayout.getLayoutParams();
-					params.topMargin = 0;
-					titleLayout.setLayoutParams(params);
-					title.setText(adapter.charAt(section));
-				}
-				if (nextSecPosition == firstVisibleItem + 1) {
-					View childView = view.getChildAt(0);
-					if (childView != null) {
-						int titleHeight = titleLayout.getHeight();
-						int bottom = childView.getBottom();
-						MarginLayoutParams params = (MarginLayoutParams) titleLayout
-								.getLayoutParams();
-						if (bottom < titleHeight) {
-							float pushedDistance = bottom - titleHeight;
-							params.topMargin = (int) pushedDistance;
-							titleLayout.setLayoutParams(params);
-						} else {
-							if (params.topMargin != 0) {
-								params.topMargin = 0;
-								titleLayout.setLayoutParams(params);
-							}
+	// I encountered an interesting problem with a TextWatcher listening for
+	// changes in an EditText.
+	// The afterTextChanged method was called, each time, the device orientation
+	// changed.
+	// An answer on Stackoverflow let me understand what was happening: Android
+	// recreates the activity, and
+	// the automatic restoration of the state of the input fields, is happening
+	// after onCreate had finished,
+	// where the TextWatcher was added as a TextChangedListener.The solution to
+	// the problem consisted in adding
+	// the TextWatcher in onPostCreate, which is called after restoration has
+	// taken place
+	//
+	// http://stackoverflow.com/questions/6028218/android-retain-callback-state-after-configuration-change/6029070#6029070
+	// http://stackoverflow.com/questions/5151095/textwatcher-called-even-if-text-is-set-before-adding-the-watcher
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		mSearchView.addTextChangedListener(filterTextWatcher);
+		super.onPostCreate(savedInstanceState);
+	}
+
+	private void setListAdaptor() {
+		// create instance of PinnedHeaderAdapter and set adapter to list view
+		mAdaptor = new PinnedHeaderAdapter(this, this, mListItems, mListSectionPos);
+		mListView.setAdapter(mAdaptor);
+
+		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+
+		// set header view
+		View pinnedHeaderView = inflater.inflate(R.layout.section_row_view, mListView, false);
+		mListView.setPinnedHeaderView(pinnedHeaderView);
+
+		// set index bar view
+		IndexBarView indexBarView = (IndexBarView) inflater.inflate(R.layout.index_bar_view, mListView, false);
+		indexBarView.setData(mListView, mListItems, mListSectionPos);
+		mListView.setIndexBarView(indexBarView);
+
+		// set preview text view
+		View previewTextView = inflater.inflate(R.layout.preview_view, mListView, false);
+		mListView.setPreviewView(previewTextView);
+
+		// for configure pinned header view on scroll change
+		mListView.setOnScrollListener(mAdaptor);
+	}
+
+	private TextWatcher filterTextWatcher = new TextWatcher() {
+		public void afterTextChanged(Editable s) {
+			String str = s.toString();
+			if (mAdaptor != null && str != null)
+				mAdaptor.getFilter().filter(str);
+		}
+
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+		}
+
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+		}
+	};
+
+	public class ListFilter extends Filter {
+		@Override
+		protected FilterResults performFiltering(CharSequence constraint) {
+			// NOTE: this function is *always* called from a background thread,
+			// and
+			// not the UI thread.
+			String constraintStr = constraint.toString().toLowerCase(Locale.getDefault());
+			FilterResults result = new FilterResults();
+
+			if (constraint != null && constraint.toString().length() > 0) {
+				ArrayList<String> filterItems = new ArrayList<String>();
+
+				synchronized (this) {
+					for (String item : mItems) {
+						if (item.toLowerCase(Locale.getDefault()).startsWith(constraintStr)) {
+							filterItems.add(item);
 						}
 					}
+					result.count = filterItems.size();
+					result.values = filterItems;
 				}
-				lastFirstVisibleItem = firstVisibleItem;
-				
-			}
-		});
-	}
-
-
-	private String[] lianxiren1 = new String[] { "拨打电话", "发送短信", "查看详细","移动分组","移出群组","删除" };
-
-	//群组联系人弹出页
-	private void showContactDialog(final String[] arg ,final ContactBean cb, final int position){
-		new AlertDialog.Builder(this).setTitle(cb.getDisplayName()).setItems(arg,
-				new DialogInterface.OnClickListener(){
-			public void onClick(DialogInterface dialog, int which){
-
-				Uri uri = null;
-
-				switch(which){
-
-				case 0://打电话
-					String toPhone = cb.getPhoneNum();
-					uri = Uri.parse("tel:" + toPhone);
-					Intent it = new Intent(Intent.ACTION_CALL, uri);
-					startActivity(it);
-					break;
-
-				case 1://发短息
-
-					String threadId = getSMSThreadId(cb.getPhoneNum());
-					
-					Map<String, String> map = new HashMap<String, String>();
-					map.put("phoneNumber", cb.getPhoneNum());
-					map.put("threadId", threadId);
-					BaseIntentUtil.intentSysDefault(HomeContactActivity.this, MessageBoxList.class, map);
-					break;
-
-				case 2:// 查看详细       修改联系人资料
-
-					uri = ContactsContract.Contacts.CONTENT_URI;
-					Uri personUri = ContentUris.withAppendedId(uri, cb.getContactId());
-					Intent intent2 = new Intent();
-					intent2.setAction(Intent.ACTION_VIEW);
-					intent2.setData(personUri);
-					startActivity(intent2);
-					break;
-
-				case 3:// 移动分组
-
-					//					Intent intent3 = null;
-					//					intent3 = new Intent();
-					//					intent3.setClass(ContactHome.this, GroupChoose.class);
-					//					intent3.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); 
-					//					intent3.putExtra("联系人", contactsID);
-					//					Log.e("contactsID", "contactsID---"+contactsID);
-					//					ContactHome.this.startActivity(intent3);
-					break;
-
-				case 4:// 移出群组
-
-					//					moveOutGroup(getRaw_contact_id(contactsID),Integer.parseInt(qzID));
-					break;
-
-				case 5:// 删除
-
-					showDelete(cb.getContactId(), position);
-					break;
+			} else {
+				synchronized (this) {
+					result.count = mItems.size();
+					result.values = mItems;
 				}
 			}
-		}).show();
-	}
-
-	// 删除联系人方法
-	private void showDelete(final int contactsID, final int position) {
-		new AlertDialog.Builder(this).setIcon(R.drawable.ic_launcher).setTitle("是否删除此联系人")
-		.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				//源码删除
-				Uri deleteUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactsID);
-				Uri lookupUri = ContactsContract.Contacts.getLookupUri(HomeContactActivity.this.getContentResolver(), deleteUri);
-				if(lookupUri != Uri.EMPTY){
-					HomeContactActivity.this.getContentResolver().delete(deleteUri, null, null);
-				}
-				adapter.remove(position);
-				adapter.notifyDataSetChanged();
-				Toast.makeText(HomeContactActivity.this, "该联系人已经被删除.", Toast.LENGTH_SHORT).show();
-			}
-		})
-		.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				
-			}
-		}).show();
-	}
-
-
-
-
-	/**
-	 * 
-	 *查询所有群组
-	 *返回值List<ContactGroup>
-	 */
-	public List<GroupBean> queryGroup(){
-
-		List<GroupBean> list=new ArrayList<GroupBean>();
-
-		GroupBean cg_all=new GroupBean();
-		cg_all.setId(0);
-		cg_all.setName("全部");
-		list.add(cg_all);
-
-		Cursor cur = getContentResolver().query(Groups.CONTENT_URI, null, null, null, null); 
-		for (cur.moveToFirst();!(cur.isAfterLast());cur.moveToNext()) {
-			if(null!=cur.getString(cur.getColumnIndex(Groups.TITLE))&&(!"".equals(cur.getString(cur.getColumnIndex(Groups.TITLE))))){
-				GroupBean cg=new GroupBean();
-				cg.setId(cur.getInt(cur.getColumnIndex(Groups._ID)));
-				cg.setName(cur.getString(cur.getColumnIndex(Groups.TITLE)));
-				list.add(cg);
-			}
-		}   
-		cur.close();
-		return list;
-	}
-
-
-
-
-
-
-
-
-
-	private void queryGroupMember(GroupBean gb){
-
-		String[] RAW_PROJECTION = new String[]{ContactsContract.Data.RAW_CONTACT_ID};  
-
-		Cursor cur = getContentResolver().query(ContactsContract.Data.CONTENT_URI,RAW_PROJECTION,  
-				ContactsContract.Data.MIMETYPE+" = '"+GroupMembership.CONTENT_ITEM_TYPE  
-				+"' AND "+ContactsContract.Data.DATA1+"="+ gb.getId(),     
-				null,  
-				"data1 asc"); 
-
-		StringBuilder inSelectionBff = new StringBuilder().append(ContactsContract.RawContacts._ID + " IN ( 0");
-		while(cur.moveToNext()){
-			inSelectionBff.append(',').append(cur.getLong(0));
+			return result;
 		}
-		cur.close();	
-		inSelectionBff.append(')');
 
-		Cursor contactIdCursor =  getContentResolver().query(ContactsContract.RawContacts.CONTENT_URI,  
-				new String[] { ContactsContract.RawContacts.CONTACT_ID }, inSelectionBff.toString(), null, ContactsContract.Contacts.DISPLAY_NAME+"  COLLATE LOCALIZED asc "); 
-		Map<Integer,Integer> map=new HashMap<Integer,Integer>();  
-		while (contactIdCursor.moveToNext()) {  
-			map.put(contactIdCursor.getInt(0), 1);  
-		}  
-		contactIdCursor.close(); 
-
-		Set<Integer> set = map.keySet();
-		Iterator<Integer> iter = set.iterator();
-		List<ContactBean> list=new ArrayList<ContactBean>();
-		while(iter.hasNext()){
-			Integer key = iter.next();
-			list.add(queryMemberOfGroup(key));
+		@SuppressWarnings("unchecked")
+		@Override
+		protected void publishResults(CharSequence constraint, FilterResults results) {
+			ArrayList<String> filtered = (ArrayList<String>) results.values;
+			setIndexBarViewVisibility(constraint.toString());
+			// sort array and extract sections in background Thread
+			new Poplulate().execute(filtered);
 		}
-		setAdapter(list);
+
+	}
+	
+	@Override
+	public Filter getListFilter(){
+		return new ListFilter();
 	}
 
-	private ContactBean queryMemberOfGroup(int id){
+	private void setIndexBarViewVisibility(String constraint) {
+		// hide index bar for search results
+		if (constraint != null && constraint.length() > 0) {
+			mListView.setIndexBarVisibility(false);
+		} else {
+			mListView.setIndexBarVisibility(true);
+		}
+	}
 
-		ContactBean cb = null;
+	// sort array and extract sections in background Thread here we use
+	// AsyncTask
+	private class Poplulate extends AsyncTask<ArrayList<String>, Void, Void> {
 
-		Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI; // 联系人的Uri
-		String[] projection = { 
-				ContactsContract.CommonDataKinds.Phone._ID,
-				ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-				ContactsContract.CommonDataKinds.Phone.DATA1,
-				"sort_key",
-				ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
-				ContactsContract.CommonDataKinds.Phone.PHOTO_ID,
-				ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY
-		}; // 查询的列
-		Cursor cursor = getContentResolver().query(uri, projection, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + id, null, null);
-		if (cursor != null && cursor.getCount() > 0) {
-			list = new ArrayList<ContactBean>();
-			cursor.moveToFirst();
-			for (int i = 0; i < cursor.getCount(); i++) {
-				cursor.moveToPosition(i);
-				String name = cursor.getString(1);
-				String number = cursor.getString(2);
-				String sortKey = cursor.getString(3);
-				int contactId = cursor.getInt(4);
-				Long photoId = cursor.getLong(5);
-				String lookUpKey = cursor.getString(6);
+		@Override
+		protected void onPreExecute() {
+//			// show loading indicator
+//			showLoading(mListView, mLoadingView, mEmptyView);
+			super.onPreExecute();
+		}
 
-				cb = new ContactBean();
-				cb.setDisplayName(name);
-//				if (number.startsWith("+86")) {// 去除多余的中国地区号码标志，对这个程序没有影响。
-//					cb.setPhoneNum(number.substring(3));
-//				} else {
-					cb.setPhoneNum(number);
+		@Override
+		protected Void doInBackground(ArrayList<String>... params) {
+			mListItems.clear();
+			mListSectionPos.clear();
+			ArrayList<String> items = params[0];
+			if (mItems.size() > 0) {
+
+				// NOT forget to sort array
+				Collections.sort(items, new SortIgnoreCase());
+
+				String prev_section = "";
+//				for (ContactBean current_item : list){
+//					String current_section = current_item.getSortKey().substring(0, 1).toUpperCase(Locale.getDefault());
+//					if (!prev_section.equals(current_section)) {
+//						mListItems.add(current_section);
+//						mListItems.add(current_item.getDisplayName());
+//						// array list of section positions
+//						mListSectionPos.add(mListItems.indexOf(current_section));
+//						prev_section = current_section;
+//					} else {
+//						mListItems.add(current_item.getDisplayName());
+//					}
 //				}
-				cb.setSortKey(sortKey);
-				cb.setContactId(contactId);
-				cb.setPhotoId(photoId);
-				cb.setLookUpKey(lookUpKey);
+				
+				for (String current_item : items) {
+					String current_section = current_item.substring(0, 1).toUpperCase(Locale.getDefault());
+
+					if (!prev_section.equals(current_section)) {
+						mListItems.add(current_section);
+						mListItems.add(current_item);
+						// array list of section positions
+						mListSectionPos.add(mListItems.indexOf(current_section));
+						prev_section = current_section;
+					} else {
+						mListItems.add(current_item);
+					}
+				}
+				
 			}
+			return null;
 		}
-		cursor.close();
-		return cb;
-	}
 
-
-	/**
-	 * 数据库异步查询类AsyncQueryHandler
-	 * 
-	 * @author administrator
-	 * 
-	 */
-	//	private class GroupQueryHandler extends AsyncQueryHandler {
-	//
-	//		public GroupQueryHandler(ContentResolver cr) {
-	//			super(cr);
-	//		}
-	//
-	//		/**
-	//		 * 查询结束的回调函数
-	//		 */
-	//		protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
-	//			if (cursor != null && cursor.getCount() > 0) {
-	//				list = new ArrayList<ContactBean>();
-	//				cursor.moveToFirst();
-	//				for (int i = 0; i < cursor.getCount(); i++) {
-	//					ContentValues cv = new ContentValues();
-	//					cursor.moveToPosition(i);
-	//					String name = cursor.getString(1);
-	//					String number = cursor.getString(2);
-	//					String sortKey = cursor.getString(3);
-	//					int contactId = cursor.getInt(4);
-	//					Long photoId = cursor.getLong(5);
-	//					String lookUpKey = cursor.getString(6);
-	//
-	//					ContactBean cb = new ContactBean();
-	//					cb.setDisplayName(name);
-	//					if (number.startsWith("+86")) {// 去除多余的中国地区号码标志，对这个程序没有影响。
-	//						cb.setPhoneNum(number.substring(3));
-	//					} else {
-	//						cb.setPhoneNum(number);
-	//					}
-	//					cb.setSortKey(sortKey);
-	//					cb.setContactId(contactId);
-	//					cb.setPhotoId(photoId);
-	//					cb.setLookUpKey(lookUpKey);
-	//					list.add(cb);
-	//				}
-	//				if (list.size() > 0) {
-	//					setAdapter(list);
-	//				}
-	//			}
-	//		}
-	//
-	//	}
-
-	public static String[] SMS_COLUMNS = new String[]{  
-		"thread_id"
-	};
-	private String getSMSThreadId(String adddress){
-		Cursor cursor = null;  
-		ContentResolver contentResolver = getContentResolver();  
-		cursor = contentResolver.query(Uri.parse("content://sms"), SMS_COLUMNS, " address like '%" + adddress + "%' ", null, null);  
-		String threadId = "";
-		if (cursor == null || cursor.getCount() > 0){
-			cursor.moveToFirst();
-			threadId = cursor.getString(0);
-			cursor.close();
-			return threadId;
-		}else{
-			cursor.close();
-			return threadId;
-		}
-	}
-
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-		if(1008 == requestCode){
-			init();
-		}
-		super.onActivityResult(requestCode, resultCode, data);
-	}
-
-	protected void onDestroy() {
-		super.onDestroy();
-		stopReceiver1();
-	}
-
-	private String ACTION1 = "SET_DEFAULT_SIG";
-	private HomeContactActivity.BaseReceiver1 receiver1 = null;
-	/**
-	 * 打开接收器
-	 */
-	private void startReceiver1() {
-		if(null==receiver1){
-			IntentFilter localIntentFilter = new IntentFilter(ACTION1);
-			receiver1 = new HomeContactActivity.BaseReceiver1();
-			this.registerReceiver(receiver1, localIntentFilter);
-		}
-	}
-	/**
-	 * 关闭接收器
-	 */
-	private void stopReceiver1() {
-		if (null != receiver1)
-			unregisterReceiver(receiver1);
-	}
-	public class BaseReceiver1 extends BroadcastReceiver {
-		public void onReceive(Context context, Intent intent) {
-			if (intent.getAction().equals(ACTION1)) {
-
-				String str_bean = intent.getStringExtra("groupbean");
-				Gson gson = new Gson();
-				GroupBean gb = gson.fromJson(str_bean, GroupBean.class);
-				if(gb.getId() == 0){
-
-					init();
-				}else{
-
-					queryGroupMember(gb);
+		@Override
+		protected void onPostExecute(Void result) {
+			if (!isCancelled()) {
+				if (mListItems.size() <= 0) {
+					showEmptyText(mListView, mLoadingView, mEmptyView);
+				} else {
+					setListAdaptor();
+					showContent(mListView, mLoadingView, mEmptyView);
 				}
 			}
+			super.onPostExecute(result);
+		}
+	}
+
+	public class SortIgnoreCase implements Comparator<String> {
+		public int compare(String s1, String s2) {
+			return s1.compareToIgnoreCase(s2);
 		}
 	}
 	
+
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		if (mListItems != null && mListItems.size() > 0) {
+			outState.putStringArrayList("mListItems", mListItems);
+		}
+		if (mListSectionPos != null && mListSectionPos.size() > 0) {
+			outState.putIntegerArrayList("mListSectionPos", mListSectionPos);
+		}
+		String searchText = mSearchView.getText().toString();
+		if (searchText != null && searchText.length() > 0) {
+			outState.putString("constraint", searchText);
+		}
+		super.onSaveInstanceState(outState);
+	}
+	
+	private void showLoading(View contentView, View loadingView, View emptyView) {
+		contentView.setVisibility(View.GONE);
+		loadingView.setVisibility(View.VISIBLE);
+		emptyView.setVisibility(View.GONE);
+	}
+
+	private void showContent(View contentView, View loadingView, View emptyView) {
+		contentView.setVisibility(View.VISIBLE);
+		loadingView.setVisibility(View.GONE);
+		emptyView.setVisibility(View.GONE);
+	}
+
+	private void showEmptyText(View contentView, View loadingView, View emptyView) {
+		contentView.setVisibility(View.GONE);
+		loadingView.setVisibility(View.GONE);
+		emptyView.setVisibility(View.VISIBLE);
+	}
 }

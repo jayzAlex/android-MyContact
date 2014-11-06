@@ -8,13 +8,13 @@ package com.dobmob.doblist;
 
 public final class R {
 	public static final class drawable {
-		public static final int ic_launcher = 0x7f020393;
+		public static final int ic_launcher = 0x7f020394;
 	}
 	public static final class id {
-		public static final int loading = 0x7f090054;
+		public static final int loading = 0x7f0a004f;
 	}
 	public static final class layout {
-		public static final int loading = 0x7f030013;
+		public static final int loading = 0x7f030014;
 	}
 	public static final class string {
 		public static final int app_name = 0x7f060000;
