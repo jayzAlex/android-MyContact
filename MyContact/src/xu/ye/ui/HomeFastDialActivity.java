@@ -70,6 +70,8 @@ public class HomeFastDialActivity extends Activity {
 		addContactBtn = (Button) findViewById(R.id.addContactBtn);
 		dbUtils = new DbUtils(context);
 		quickList = dbUtils.getQuick();
+		if(quickList.size() >= 12)
+			addContactBtn.setVisibility(View.GONE);
 		initQuickViews();
 		setListeners();
 	}
@@ -96,6 +98,15 @@ public class HomeFastDialActivity extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
+		if (dbUtils != null) {
+			dbUtils.deleteQuick();
+			for (int i = 0; i < quickList.size(); i++) {
+				ContactBean cb = quickList.get(i);
+				if (cb != null) {
+					dbUtils.saveQuickByPosition(i, cb);
+				}
+			}
+		}
 	}
 
 	private void setListeners() {
@@ -242,6 +253,12 @@ public class HomeFastDialActivity extends Activity {
 				view.setImageBitmap(contactBean2Bitmap(resultContactBean));
 				mDragGridView.addView(view);
 				quickList.add(resultContactBean);
+				if(quickList.size() >= 12 
+						&& addContactBtn.getVisibility() == View.VISIBLE)
+					addContactBtn.setVisibility(View.GONE);
+				else if(quickList.size() < 12 
+						&& addContactBtn.getVisibility() == View.GONE)
+					addContactBtn.setVisibility(View.VISIBLE);
 			}
 		}
 	}
@@ -411,14 +428,14 @@ public class HomeFastDialActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		if (dbUtils != null) {
-			dbUtils.deleteQuick();
-			for (int i = 0; i < quickList.size(); i++) {
-				ContactBean cb = quickList.get(i);
-				if (cb != null) {
-					dbUtils.saveQuickByPosition(i, cb);
-				}
-			}
-		}
+//		if (dbUtils != null) {
+//			dbUtils.deleteQuick();
+//			for (int i = 0; i < quickList.size(); i++) {
+//				ContactBean cb = quickList.get(i);
+//				if (cb != null) {
+//					dbUtils.saveQuickByPosition(i, cb);
+//				}
+//			}
+//		}
 	}
 }

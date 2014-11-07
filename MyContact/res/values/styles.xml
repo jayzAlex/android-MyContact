@@ -2,7 +2,7 @@
 <resources>
     <style name="topbar_bg">
         <item name="android:gravity">center_vertical</item>
-        <item name="android:background">@drawable/top_bar_bg</item>
+        <item name="android:background">@drawable/main_tab_bg</item>
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">46.0dip</item>
     </style>
@@ -10,7 +10,7 @@
     <style name="topbar_text">
 	    <item name="android:textSize">23sp</item>
 	    <item name="android:textStyle">bold</item>
-	    <item name="android:textColor">#ffffffff</item>
+	    <item name="android:textColor">@color/color_white_UI</item>
 	    <item name="android:layout_gravity">center</item>
 	    <item name="android:layout_width">wrap_content</item>
 	    <item name="android:layout_height">wrap_content</item>
@@ -62,5 +62,27 @@
 	    <item name="android:windowBackground">@null</item> 
 	    <item name="android:backgroundDimEnabled">false</item> 
 	</style>
+	
+	<style name="CustomDialog" parent="android:style/Theme.Dialog">  
+        <!--背景颜色及透明程度--> 
+        <item name="android:windowBackground">@android:color/transparent</item>  
+        <!--是否有标题 --> 
+        <item name="android:windowNoTitle">true</item>
+        <!--是否浮现在activity之上-->
+        <item name="android:windowIsFloating">true</item>
+        <!--是否模糊-->
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowFrame">@null</item>
+    </style>
+    
+    <style name="contact_listview_section_row_text" >
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/color_white</item>
+    </style>
+    
+    <style name="contact_listview_row_text" >
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/color_black</item>
+    </style>    
 	
 </resources>

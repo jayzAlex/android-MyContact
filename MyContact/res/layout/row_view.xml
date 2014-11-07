@@ -5,6 +5,6 @@
      android:layout_width="fill_parent"
      android:layout_height="wrap_content"
      android:padding="10dp"
-     android:textColor="@color/color_black"
+     style="@style/contact_listview_row_text"
      />
 

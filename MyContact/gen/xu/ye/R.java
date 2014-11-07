@@ -48,9 +48,10 @@ containing a value of this type.
         public static final int button_selected=0x7f08001e;
         public static final int button_unselected=0x7f08001d;
         public static final int color_black=0x7f08002d;
-        public static final int color_black_light=0x7f080030;
-        public static final int color_gray_light=0x7f08002f;
+        public static final int color_black_light=0x7f080031;
+        public static final int color_gray_light=0x7f080030;
         public static final int color_white=0x7f08002e;
+        public static final int color_white_UI=0x7f08002f;
         public static final int gray=0x7f080005;
         public static final int gray_bit=0x7f080024;
         public static final int gray_bold=0x7f08000d;
@@ -1268,20 +1269,20 @@ containing a value of this type.
         public static final int emojicon_item=0x7f030006;
         public static final int emojicons=0x7f030007;
         public static final int home_contact_page=0x7f030008;
-        public static final int home_dial_calllog_list_item=0x7f030009;
-        public static final int home_dial_page=0x7f03000a;
-        public static final int home_dial_page2=0x7f03000b;
-        public static final int home_fastdial_page=0x7f03000c;
-        public static final int home_setting_page=0x7f03000d;
-        public static final int home_sms_list_item=0x7f03000e;
-        public static final int home_sms_page=0x7f03000f;
-        public static final int home_t9_list_item=0x7f030010;
-        public static final int index_bar_view=0x7f030011;
-        public static final int list_say_he_item=0x7f030012;
-        public static final int list_say_me_item=0x7f030013;
-        public static final int loading=0x7f030014;
-        public static final int loading_empty_view=0x7f030015;
-        public static final int main_act=0x7f030016;
+        public static final int home_contact_page2=0x7f030009;
+        public static final int home_dial_calllog_list_item=0x7f03000a;
+        public static final int home_dial_page=0x7f03000b;
+        public static final int home_dial_page2=0x7f03000c;
+        public static final int home_fastdial_page=0x7f03000d;
+        public static final int home_setting_page=0x7f03000e;
+        public static final int home_sms_list_item=0x7f03000f;
+        public static final int home_sms_page=0x7f030010;
+        public static final int home_t9_list_item=0x7f030011;
+        public static final int index_bar_view=0x7f030012;
+        public static final int list_say_he_item=0x7f030013;
+        public static final int list_say_me_item=0x7f030014;
+        public static final int loading=0x7f030015;
+        public static final int loading_empty_view=0x7f030016;
         public static final int main_hometabhost=0x7f030017;
         public static final int menu_list_item=0x7f030018;
         public static final int menu_scroll_view=0x7f030019;
@@ -1348,6 +1349,9 @@ containing a value of this type.
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f070001;
+        public static final int CustomDialog=0x7f07000b;
+        public static final int contact_listview_row_text=0x7f07000d;
+        public static final int contact_listview_section_row_text=0x7f07000c;
         public static final int fullscreendialog=0x7f07000a;
         public static final int text_laoding=0x7f070008;
         public static final int text_size_timepicker=0x7f070007;

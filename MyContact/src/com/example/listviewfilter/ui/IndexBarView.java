@@ -4,6 +4,7 @@ package com.example.listviewfilter.ui;
 import java.util.ArrayList;
 
 import xu.ye.R;
+import xu.ye.bean.ContactBean;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -32,7 +33,7 @@ public class IndexBarView extends View {
     public ArrayList<Integer> mListSections;
 
     // array list to store listView data
-    ArrayList<String> mListItems;
+    ArrayList<ContactBean> mListItems;
 
     // paint object
     Paint mIndexPaint;
@@ -63,7 +64,7 @@ public class IndexBarView extends View {
     }
     
 
-    public void setData(PinnedHeaderListView listView, ArrayList<String> listItems,ArrayList<Integer> listSections) {
+    public void setData(PinnedHeaderListView listView, ArrayList<ContactBean> listItems,ArrayList<Integer> listSections) {
         this.mListItems = listItems;
         this.mListSections = listSections;
         
@@ -102,7 +103,7 @@ public class IndexBarView extends View {
 
     
     public String getSectionText(int sectionPosition) {
-        return mListItems.get(sectionPosition);
+        return mListItems.get(sectionPosition).getDisplayName();
     }
 
     
@@ -122,7 +123,7 @@ public class IndexBarView extends View {
 
         if (mCurrentSectionPosition >= 0 && mCurrentSectionPosition < mListSections.size()) {
             int position = mListSections.get(mCurrentSectionPosition);
-            String previewText = mListItems.get(position);
+            String previewText = mListItems.get(position).getDisplayName();
             mIndexBarFilter.filterList(mSideIndexY, position, previewText);
         }
     }

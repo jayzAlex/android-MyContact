@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import xu.ye.R;
-
+import xu.ye.bean.ContactBean;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +17,6 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
-import com.example.listviewfilter.ui.MainActivity;
 import com.example.listviewfilter.ui.PinnedHeaderListView;
 
 // Customized adaptor to populate data in PinnedHeaderListView
@@ -34,13 +33,13 @@ public class PinnedHeaderAdapter extends BaseAdapter implements OnScrollListener
 	ArrayList<Integer> mListSectionPos;
 
 	// array list to store list view data
-	ArrayList<String> mListItems;
+	ArrayList<ContactBean> mListItems;
 
 	// context object
 	Context mContext;
 	private IPinnedListFilter iPinnedListFilter;
 
-	public PinnedHeaderAdapter(Context context,IPinnedListFilter iPinnedListFilter, ArrayList<String> listItems,ArrayList<Integer> listSectionPos) {
+	public PinnedHeaderAdapter(Context context,IPinnedListFilter iPinnedListFilter, ArrayList<ContactBean> listItems,ArrayList<Integer> listSectionPos) {
 		this.mContext = context;
 		this.iPinnedListFilter = iPinnedListFilter;
 		this.mListItems = listItems;
@@ -106,7 +105,7 @@ public class PinnedHeaderAdapter extends BaseAdapter implements OnScrollListener
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		holder.textView.setText(mListItems.get(position).toString());
+		holder.textView.setText(mListItems.get(position).getDisplayName().toString());
 		return convertView;
 	}
 
@@ -131,8 +130,21 @@ public class PinnedHeaderAdapter extends BaseAdapter implements OnScrollListener
 	}
 
 	public int getCurrentSectionPosition(int position) {
-		String listChar = mListItems.get(position).toString().substring(0, 1).toUpperCase(Locale.getDefault());
-		return mListItems.indexOf(listChar);
+		// section header
+		if (mListItems.get(position).getSortKey() == null){
+			return position;
+		}
+		// section item
+		String listChar = mListItems.get(position).getSortKey().substring(0, 1).toUpperCase(Locale.getDefault());
+		for (int i = 0; i <= position; i++) {
+//			if (mListItems.get(i).getSortKey() != null && mListItems.get(i).getSortKey().startsWith(listChar))
+			if (mListItems.get(i).getDisplayName().startsWith(listChar))
+				return i;
+		}
+		// default
+		return -1;
+		
+//		return mListItems.indexOf(listChar);
 	}
 
 	public int getNextSectionPosition(int currentSectionPosition) {
@@ -148,7 +160,7 @@ public class PinnedHeaderAdapter extends BaseAdapter implements OnScrollListener
 		// set text in pinned header
 		TextView header = (TextView) v;
 		mCurrentSectionPosition = getCurrentSectionPosition(position);
-		header.setText(mListItems.get(mCurrentSectionPosition));
+		header.setText(mListItems.get(mCurrentSectionPosition).getDisplayName());
 	}
 
 	@Override

@@ -14,6 +14,6 @@
     <string name="delete">删除联系人</string>
     <string name="please_choose">请选择：</string>
     
- 	<string name="search_hint">任何联系人</string>
+ 	<string name="search_hint">联系人...</string>
 	<string name="empty_list_msg">没有联系人</string>       
 </resources>

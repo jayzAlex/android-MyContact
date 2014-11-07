@@ -24,6 +24,7 @@
         android:visibility="gone"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/empty_list_msg"
+        android:textColor="@color/color_black_light"
         android:gravity="center"
         android:padding="15dp"
         />

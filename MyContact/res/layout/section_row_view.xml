@@ -7,9 +7,9 @@
      android:background="@color/color_black_light" 
      android:paddingLeft="10dp"
      android:textStyle="bold"
-     android:textColor="@color/color_white"
      android:clickable="false"
      android:enabled="false"
      android:focusable="false"
+     style="@style/contact_listview_section_row_text"
       />
 
