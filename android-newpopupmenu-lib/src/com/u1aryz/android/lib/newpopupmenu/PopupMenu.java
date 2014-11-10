@@ -6,7 +6,9 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -19,8 +21,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class PopupMenu {
@@ -30,7 +34,7 @@ public class PopupMenu {
     private WindowManager mWindowManager;
 
     private PopupWindow mPopupWindow;
-    private View mContentView;
+//    private View mContentView;
     private ListView mItemsView;
     private TextView mHeaderTitleView;
     private OnItemSelectedListener mListener;
@@ -38,6 +42,7 @@ public class PopupMenu {
     private List<MenuItem> mItems;
     private int mWidth = 240;
     private float mScale;
+	private RelativeLayout rl_frame;
 
     public PopupMenu(Context context) {
         mContext = context;
@@ -48,12 +53,14 @@ public class PopupMenu {
         mScale = metrics.scaledDensity;
 
         mItems = new ArrayList<MenuItem>();
-
         mPopupWindow = new PopupWindow(context);
         mPopupWindow.setTouchInterceptor(new OnTouchListener() {
-
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+            	if(!isInsideZoneHover((int)event.getRawX(),(int)event.getRawY())) {
+            		mPopupWindow.dismiss();
+            		return true;            		
+            	}
                 if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
                     mPopupWindow.dismiss();
                     return true;
@@ -64,6 +71,12 @@ public class PopupMenu {
 
         setContentView(mInflater.inflate(R.layout.popup_menu, null));
     }
+    
+	public boolean isInsideZoneHover(int x, int y) {
+		Rect zone = new Rect();
+		rl_frame.getHitRect(zone);
+		return zone.intersect(x, y, x + 1, y + 1);
+	}
 
     /**
      * Sets the popup's content.
@@ -71,10 +84,10 @@ public class PopupMenu {
      * @param contentView
      */
     private void setContentView(View contentView) {
-        mContentView = contentView;
+//        mContentView = contentView;
         mItemsView = (ListView) contentView.findViewById(R.id.items);
         mHeaderTitleView = (TextView) contentView.findViewById(R.id.header_title);
-
+        rl_frame = (RelativeLayout) contentView.findViewById(R.id.rl_frame);
         mPopupWindow.setContentView(contentView);
     }
 
@@ -136,50 +149,56 @@ public class PopupMenu {
             return;
         }
 
-        int xPos, yPos;
-        int[] location = new int[2];
-        anchor.getLocationOnScreen(location);
-
-        Rect anchorRect = new Rect(location[0], location[1],
-                location[0] + anchor.getWidth(),
-                location[1] + anchor.getHeight());
-
-        mContentView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        mContentView.measure(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-
-        int rootHeight = mContentView.getMeasuredHeight();
-        int screenHeight = mWindowManager.getDefaultDisplay().getHeight();
-
-        // Set x-coordinate to display the popup menu
-        xPos = anchorRect.centerX() - mPopupWindow.getWidth() / 2;
-
-        int dyTop = anchorRect.top;
-        int dyBottom = screenHeight + rootHeight;
-        boolean onTop = dyTop > dyBottom;
-
-        // Set y-coordinate to display the popup menu
-        if (onTop) {
-            yPos = anchorRect.top - rootHeight;
-        } else {
-            if (anchorRect.bottom > dyTop) {
-                yPos = anchorRect.bottom - 20;
-            } else {
-                yPos = anchorRect.top - anchorRect.bottom + 50;
-            }
-        }
-
-        mPopupWindow.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, yPos);
+//        int xPos, yPos;
+//        int[] location = new int[2];
+//        anchor.getLocationOnScreen(location);
+//
+//        Rect anchorRect = new Rect(location[0], location[1],
+//                location[0] + anchor.getWidth(),
+//                location[1] + anchor.getHeight());
+//
+//        mContentView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+//        mContentView.measure(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+//
+//        int rootHeight = mContentView.getMeasuredHeight();
+//        int screenHeight = mWindowManager.getDefaultDisplay().getHeight();
+//
+//        // Set x-coordinate to display the popup menu
+//        xPos = anchorRect.centerX() - mPopupWindow.getWidth() / 2;
+//
+//        int dyTop = anchorRect.top;
+//        int dyBottom = screenHeight + rootHeight;
+//        boolean onTop = dyTop > dyBottom;
+//
+//        // Set y-coordinate to display the popup menu
+//        if (onTop) {
+//            yPos = anchorRect.top - rootHeight;
+//        } else {
+//            if (anchorRect.bottom > dyTop) {
+//                yPos = anchorRect.bottom - 20;
+//            } else {
+//                yPos = anchorRect.top - anchorRect.bottom + 50;
+//            }
+//        }
+//
+//        mPopupWindow.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, yPos);
     }
 
     private void preShow() {
-        int width = (int) (mWidth * mScale);
-        mPopupWindow.setWidth(width);
-        mPopupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+    	mPopupWindow.setWidth(WindowManager.LayoutParams.FILL_PARENT);
+    	mPopupWindow.setHeight(WindowManager.LayoutParams.FILL_PARENT);
+//        int width = (int) (mWidth * mScale);
+//        mPopupWindow.setWidth(width);
+//        mPopupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+//    	rl_frame.setLayoutParams(new RelativeLayout.LayoutParams(width, RelativeLayout.LayoutParams.WRAP_CONTENT));
+//    	rl_frame.setGravity(Gravity.CENTER);
         mPopupWindow.setTouchable(true);
         mPopupWindow.setFocusable(true);
         mPopupWindow.setOutsideTouchable(true);
-        mPopupWindow.setAnimationStyle(android.R.style.Animation_Dialog);
-        mPopupWindow.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.panel_background));
+        
+//        mPopupWindow.setAnimationStyle(android.R.style.Animation_Dialog);
+        mPopupWindow.setBackgroundDrawable(new ColorDrawable(0x55000000));
+//        mPopupWindow.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.panel_background));
     }
 
     /**

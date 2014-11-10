@@ -98,9 +98,15 @@ public class HomeDialAdapter extends BaseAdapter {
 	
 	private void filterList(int type){
 		list.clear();
-		for(CallLogBean clb : srclist){
-			if(clb.getType() == type)list.add(clb);
-		}
+		if(type == 0)
+			for(CallLogBean clb : srclist){
+				list.add(clb);
+			}
+		else 
+			for(CallLogBean clb : srclist){
+				if(clb.getType() == type)list.add(clb);
+			}
+		
 		notifyDataSetChanged();
 	}
 	
@@ -114,6 +120,10 @@ public class HomeDialAdapter extends BaseAdapter {
 	
 	public void onOut() {
 		filterList(1);
+	}
+	
+	public void onAll() {
+		filterList(0);
 	}
 
 }

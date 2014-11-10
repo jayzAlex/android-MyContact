@@ -1,6 +1,5 @@
 package xu.ye.ui;
 
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,7 +16,6 @@ import xu.ye.view.adapter.T9Adapter;
 import android.app.Activity;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -26,10 +24,8 @@ import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CallLog;
-import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -74,6 +70,10 @@ public class HomeDialActivity extends Activity implements OnClickListener {
 	private Button out_btn;
 	private static final String TAG = "HomeDialActivity";
 	
+	private boolean isFilterAll = true;
+
+	private TextView topbar_title;
+	
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
@@ -81,6 +81,7 @@ public class HomeDialActivity extends Activity implements OnClickListener {
 		
 		application = (MyApplication)getApplication();
 		listView = (ListView) findViewById(R.id.contact_list);
+		topbar_title = (TextView) findViewById(R.id.topbar_title);
 		
 		bohaopan = (LinearLayout) findViewById(R.id.bohaopan);
 		keyboard_show_ll = (LinearLayout) findViewById(R.id.keyboard_show_ll);
@@ -107,17 +108,41 @@ public class HomeDialActivity extends Activity implements OnClickListener {
 		
 		miss_btn.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				adapter.onMiss();
+				if(isFilterAll) {
+					topbar_title.setText(R.string.miss);
+					adapter.onMiss();
+					isFilterAll = false;
+				} else {
+					topbar_title.setText(R.string.all);
+					adapter.onAll();
+					isFilterAll = true;
+				}
 			}
 		});
 		in_btn.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				adapter.onIn();
+				if(isFilterAll) {
+					topbar_title.setText(R.string.in);
+					adapter.onIn();
+					isFilterAll = false;
+				} else {
+					topbar_title.setText(R.string.all);
+					adapter.onAll();
+					isFilterAll = true;
+				}
 			}
 		});
 		out_btn.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				adapter.onOut();
+				if(isFilterAll) {
+					topbar_title.setText(R.string.out);
+					adapter.onOut();
+					isFilterAll = false;
+				} else {
+					topbar_title.setText(R.string.all);
+					adapter.onAll();
+					isFilterAll = true;
+				}
 			}
 		});		
 		

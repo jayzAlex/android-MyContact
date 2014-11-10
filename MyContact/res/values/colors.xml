@@ -51,8 +51,10 @@
     
     <color name="color_black">#000000</color>
     <color name="color_white">#FFFFFF</color>
-    <color name="color_white_UI">#EEEEEE</color>
+    <color name="color_white_ui">#EEEEEE</color>
     <color name="color_gray_light">#99C9C9C9</color>
     <color name="color_black_light">#99000000</color>
+    <color name="color_black_ui">#99333333</color>
+    <color name="color_top_bar_backcolor">#99006eff</color>
         
 </resources>

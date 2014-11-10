@@ -1,33 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-
-    <TextView android:id="@+id/header_title"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="left|center_vertical"
-        android:paddingTop="5dip"
-        android:paddingBottom="5dip"
-        android:paddingLeft="10dip"
-        android:paddingRight="10dip"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/black"
-        android:textStyle="bold"
-        android:background="#ff333333"
-        android:singleLine="true"
-        android:ellipsize="marquee"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:visibility="gone"
-        />
-
-    <ListView android:id="@+id/items"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:divider="@null"
-        android:cacheColorHint="@android:color/transparent"
-        />
-</LinearLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    	android:layout_width="fill_parent"
+	    android:layout_height="fill_parent">
+	<RelativeLayout
+	    android:layout_centerInParent="true"
+	    android:id="@+id/rl_frame"
+	    android:orientation="vertical"
+	    android:layout_width="240dip"
+	    android:layout_height="wrap_content"
+	    android:paddingBottom="25dip"
+	    android:background="#EEEEEE" >
+	
+	    <TextView android:id="@+id/header_title"
+	        android:layout_width="fill_parent"
+	        android:layout_height="50dip"
+	        android:gravity="center"
+	        android:layout_centerHorizontal="true"
+	        android:paddingTop="5dip"
+	        android:paddingBottom="5dip"
+	        android:textStyle="bold"
+	        android:paddingLeft="10dip"
+	        android:paddingRight="10dip"
+	        android:textColor="@android:color/black"
+	        android:textAppearance="?android:attr/textAppearanceLarge"
+	        android:singleLine="true"
+	        android:ellipsize="marquee"
+	        android:focusable="true"
+	        android:focusableInTouchMode="true"
+	        android:visibility="gone"
+	        android:background="#999999"
+	        android:layout_marginBottom="10dip" />
+	
+	    <ListView android:id="@+id/items"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:divider="#CCCCCC"
+	        android:cacheColorHint="@android:color/transparent"
+	        android:layout_below="@id/header_title"
+	        android:layout_centerHorizontal="true" />
+	</RelativeLayout>
+</RelativeLayout>

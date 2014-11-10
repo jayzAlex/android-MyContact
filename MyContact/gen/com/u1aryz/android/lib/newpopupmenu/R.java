@@ -11,13 +11,17 @@ public final class R {
 		public static final int panel_background = 0x7f0203ef;
 	}
 	public static final class id {
-		public static final int header_title = 0x7f0a0064;
-		public static final int items = 0x7f0a0065;
-		public static final int iv_menu_list_item_icon = 0x7f0a0066;
-		public static final int tv_menu_list_item_title = 0x7f0a0067;
+		public static final int header_title = 0x7f0a0065;
+		public static final int items = 0x7f0a0066;
+		public static final int iv_menu_list_item_icon = 0x7f0a0067;
+		public static final int rl_frame = 0x7f0a0064;
+		public static final int tv_menu_list_item_title = 0x7f0a0068;
 	}
 	public static final class layout {
 		public static final int popup_menu = 0x7f03001c;
 		public static final int popup_menu_list_item = 0x7f03001d;
+	}
+	public static final class style {
+		public static final int Dialog = 0x7f060000;
 	}
 }

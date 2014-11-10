@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/acbuwa_page"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:background="@color/color_white_ui">
 
     <RelativeLayout
         android:id="@+id/acbuwa_topbar"
@@ -13,7 +14,7 @@
         <TextView
             android:id="@+id/topbar_title"
             style="@style/topbar_text"
-            android:text="拨号" />
+            android:text="全部电话" />
     </RelativeLayout>
     
     <LinearLayout

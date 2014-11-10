@@ -49,9 +49,11 @@ containing a value of this type.
         public static final int button_unselected=0x7f08001d;
         public static final int color_black=0x7f08002d;
         public static final int color_black_light=0x7f080031;
+        public static final int color_black_ui=0x7f080032;
         public static final int color_gray_light=0x7f080030;
+        public static final int color_top_bar_backcolor=0x7f080033;
         public static final int color_white=0x7f08002e;
-        public static final int color_white_UI=0x7f08002f;
+        public static final int color_white_ui=0x7f08002f;
         public static final int gray=0x7f080005;
         public static final int gray_bit=0x7f080024;
         public static final int gray_bold=0x7f08000d;
@@ -1146,16 +1148,16 @@ containing a value of this type.
         public static final int bottom=0x7f0a0001;
         public static final int bottom_ll=0x7f0a005e;
         public static final int bottom_ll_container=0x7f0a005d;
-        public static final int box_option_delete=0x7f0a0070;
-        public static final int btn_call=0x7f0a007b;
-        public static final int btn_done=0x7f0a0075;
+        public static final int box_option_delete=0x7f0a0071;
+        public static final int btn_call=0x7f0a007c;
+        public static final int btn_done=0x7f0a0076;
         public static final int btn_return=0x7f0a0059;
         public static final int call_btn=0x7f0a0028;
         public static final int call_log_list=0x7f0a0030;
         public static final int call_type=0x7f0a0027;
         public static final int cancel=0x7f0a0011;
         public static final int carol_topbar=0x7f0a0054;
-        public static final int check=0x7f0a0074;
+        public static final int check=0x7f0a0075;
         public static final int contact_list=0x7f0a0031;
         public static final int contact_name=0x7f0a0019;
         public static final int contact_phonenum=0x7f0a001a;
@@ -1176,10 +1178,10 @@ containing a value of this type.
         public static final int dialNum9=0x7f0a003e;
         public static final int dialj=0x7f0a0041;
         public static final int dialx=0x7f0a003f;
-        public static final int displayname=0x7f0a006e;
+        public static final int displayname=0x7f0a006f;
         public static final int drag_grid_item=0x7f0a0012;
         public static final int duomeiti=0x7f0a005f;
-        public static final int edit=0x7f0a0069;
+        public static final int edit=0x7f0a006a;
         public static final int emojicon_icon=0x7f0a001c;
         public static final int emojicons=0x7f0a0063;
         public static final int emojicons_layout=0x7f0a0062;
@@ -1193,16 +1195,16 @@ containing a value of this type.
         public static final int emojis_tab_4_punctuation=0x7f0a0023;
         public static final int empty_view=0x7f0a0051;
         public static final int fasong=0x7f0a0061;
-        public static final int fast_position=0x7f0a0077;
-        public static final int fast_scroller=0x7f0a0076;
+        public static final int fast_position=0x7f0a0078;
+        public static final int fast_scroller=0x7f0a0077;
         public static final int fg=0x7f0a0029;
-        public static final int from=0x7f0a006a;
-        public static final int from_form=0x7f0a0078;
-        public static final int from_time=0x7f0a006b;
-        public static final int header_title=0x7f0a0064;
+        public static final int from=0x7f0a006b;
+        public static final int from_form=0x7f0a0079;
+        public static final int from_time=0x7f0a006c;
+        public static final int header_title=0x7f0a0065;
         public static final int in_btn=0x7f0a002e;
-        public static final int items=0x7f0a0065;
-        public static final int iv_menu_list_item_icon=0x7f0a0066;
+        public static final int items=0x7f0a0066;
+        public static final int iv_menu_list_item_icon=0x7f0a0067;
         public static final int keyboard_hide=0x7f0a0033;
         public static final int keyboard_show=0x7f0a002c;
         public static final int keyboard_show_ll=0x7f0a002b;
@@ -1216,8 +1218,8 @@ containing a value of this type.
         public static final int loading_view=0x7f0a0050;
         public static final int lxr=0x7f0a0014;
         public static final int mScrollView=0x7f0a0057;
-        public static final int main_activity_tab_image=0x7f0a007d;
-        public static final int main_activity_tab_text=0x7f0a007e;
+        public static final int main_activity_tab_image=0x7f0a007e;
+        public static final int main_activity_tab_text=0x7f0a007f;
         public static final int menuBtn=0x7f0a0055;
         public static final int menuList=0x7f0a0056;
         public static final int menuText=0x7f0a0053;
@@ -1234,25 +1236,26 @@ containing a value of this type.
         public static final int option2=0x7f0a0010;
         public static final int out_btn=0x7f0a002f;
         public static final int phone_view=0x7f0a0034;
-        public static final int phonenum=0x7f0a006f;
+        public static final int phonenum=0x7f0a0070;
         public static final int pinyin=0x7f0a004b;
-        public static final int preview_view=0x7f0a0071;
+        public static final int preview_view=0x7f0a0072;
         public static final int qcb=0x7f0a000a;
-        public static final int refresh_button=0x7f0a007a;
-        public static final int row_title=0x7f0a0072;
-        public static final int scroll_linearLayout=0x7f0a0073;
+        public static final int refresh_button=0x7f0a007b;
+        public static final int rl_frame=0x7f0a0064;
+        public static final int row_title=0x7f0a0073;
+        public static final int scroll_linearLayout=0x7f0a0074;
         public static final int search_view=0x7f0a0025;
-        public static final int tabsLayout=0x7f0a007c;
+        public static final int tabsLayout=0x7f0a007d;
         public static final int time=0x7f0a002a;
-        public static final int time_set=0x7f0a0068;
-        public static final int to=0x7f0a006c;
-        public static final int to_form=0x7f0a0079;
-        public static final int to_time=0x7f0a006d;
+        public static final int time_set=0x7f0a0069;
+        public static final int to=0x7f0a006d;
+        public static final int to_form=0x7f0a007a;
+        public static final int to_time=0x7f0a006e;
         public static final int top=0x7f0a0058;
         public static final int topbar_left_btn=0x7f0a0016;
         public static final int topbar_right_btn=0x7f0a0018;
         public static final int topbar_title=0x7f0a0017;
-        public static final int tv_menu_list_item_title=0x7f0a0067;
+        public static final int tv_menu_list_item_title=0x7f0a0068;
         public static final int txt1=0x7f0a0006;
         public static final int txt2=0x7f0a0007;
         public static final int txt3=0x7f0a0008;
@@ -1318,20 +1321,24 @@ containing a value of this type.
         public static final int dtmf9=0x7f05000c;
     }
     public static final class string {
-        public static final int app_name=0x7f060000;
-        public static final int button1Text=0x7f060006;
-        public static final int button2Text=0x7f060007;
-        public static final int carol=0x7f060002;
-        public static final int delete=0x7f06000a;
-        public static final int dial=0x7f060008;
-        public static final int empty_list_msg=0x7f06000d;
-        public static final int hello=0x7f060001;
-        public static final int loading=0x7f060003;
-        public static final int no_more_sms=0x7f060005;
-        public static final int no_sms_items=0x7f060004;
-        public static final int please_choose=0x7f06000b;
-        public static final int search_hint=0x7f06000c;
-        public static final int sms=0x7f060009;
+        public static final int all=0x7f07000e;
+        public static final int app_name=0x7f070000;
+        public static final int button1Text=0x7f070006;
+        public static final int button2Text=0x7f070007;
+        public static final int carol=0x7f070002;
+        public static final int delete=0x7f07000a;
+        public static final int dial=0x7f070008;
+        public static final int empty_list_msg=0x7f07000d;
+        public static final int hello=0x7f070001;
+        public static final int in=0x7f070010;
+        public static final int loading=0x7f070003;
+        public static final int miss=0x7f07000f;
+        public static final int no_more_sms=0x7f070005;
+        public static final int no_sms_items=0x7f070004;
+        public static final int out=0x7f070011;
+        public static final int please_choose=0x7f07000b;
+        public static final int search_hint=0x7f07000c;
+        public static final int sms=0x7f070009;
     }
     public static final class style {
         /** 
@@ -1344,23 +1351,24 @@ containing a value of this type.
             backward-compatibility can go here.
         
          */
-        public static final int AppBaseTheme=0x7f070000;
+        public static final int AppBaseTheme=0x7f060001;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f070001;
-        public static final int CustomDialog=0x7f07000b;
-        public static final int contact_listview_row_text=0x7f07000d;
-        public static final int contact_listview_section_row_text=0x7f07000c;
-        public static final int fullscreendialog=0x7f07000a;
-        public static final int text_laoding=0x7f070008;
-        public static final int text_size_timepicker=0x7f070007;
-        public static final int text_size_timepicker_seleted=0x7f070009;
-        public static final int topbar_bg=0x7f070002;
-        public static final int topbar_btn=0x7f070004;
-        public static final int topbar_left_btn=0x7f070005;
-        public static final int topbar_right_btn=0x7f070006;
-        public static final int topbar_text=0x7f070003;
+        public static final int AppTheme=0x7f060002;
+        public static final int CustomDialog=0x7f06000c;
+        public static final int Dialog=0x7f060000;
+        public static final int contact_listview_row_text=0x7f06000e;
+        public static final int contact_listview_section_row_text=0x7f06000d;
+        public static final int fullscreendialog=0x7f06000b;
+        public static final int text_laoding=0x7f060009;
+        public static final int text_size_timepicker=0x7f060008;
+        public static final int text_size_timepicker_seleted=0x7f06000a;
+        public static final int topbar_bg=0x7f060003;
+        public static final int topbar_btn=0x7f060005;
+        public static final int topbar_left_btn=0x7f060006;
+        public static final int topbar_right_btn=0x7f060007;
+        public static final int topbar_text=0x7f060004;
     }
     public static final class styleable {
         /** Attributes that can be used with a CompoundButton.

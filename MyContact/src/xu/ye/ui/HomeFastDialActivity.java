@@ -150,7 +150,7 @@ public class HomeFastDialActivity extends Activity {
 //								}).show();
 		        // Create Instance
 		        PopupMenu menu = new PopupMenu(HomeFastDialActivity.this);
-		        menu.setHeaderTitle(quickList.get(i).getDisplayName()+":");
+		        menu.setHeaderTitle(quickList.get(i).getDisplayName());
 		        // Set Listener
 		        menu.setOnItemSelectedListener(mOnItemSelectedListener);
 		        // Add Menu (Android menu like style)
@@ -160,7 +160,7 @@ public class HomeFastDialActivity extends Activity {
 		                getResources().getDrawable(R.drawable.ic_action_sms));
 		        menu.add(DELETE, R.string.delete).setIcon(
 		                getResources().getDrawable(R.drawable.ic_action_discard));
-		        menu.show(view);
+		        menu.show();
 			}
 		});
 		addContactBtn.setOnClickListener(new OnClickListener() {
