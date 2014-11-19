@@ -55,6 +55,6 @@
     <color name="color_gray_light">#99C9C9C9</color>
     <color name="color_black_light">#99000000</color>
     <color name="color_black_ui">#99333333</color>
-    <color name="color_top_bar_backcolor">#99006eff</color>
+    <color name="color_top_bar_backcolor">#FF3F9FE0</color>
         
 </resources>
